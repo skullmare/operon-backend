@@ -5,13 +5,11 @@ const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
     });
-
-    console.log(`✅ MongoDB подключена: ${conn.connection.host}`);
-    console.log(`📦 База данных: ${conn.connection.name}`);
+    console.log(`✅ База данных ${conn.connection.name} успешно подключена (адрес сервера: ${conn.connection.host}:${conn.connection.port})`);
     
     // Слушаем события подключения
     mongoose.connection.on('error', (err) => {
-      console.error('❌ Ошибка MongoDB:', err);
+      console.error('❌ Ошибка подключения к базе данных MongoDB:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
@@ -20,7 +18,7 @@ const connectDB = async () => {
 
     return conn;
   } catch (error) {
-    console.error('❌ Ошибка подключения к MongoDB:', error.message);
+    console.error('❌ Ошибка подключения к базе данных MongoDB:', error.message);
     process.exit(1); // Завершаем процесс при ошибке подключения
   }
 };
@@ -31,7 +29,7 @@ const disconnectDB = async () => {
     await mongoose.connection.close();
     console.log('📦 MongoDB соединение закрыто');
   } catch (error) {
-    console.error('❌ Ошибка при закрытии MongoDB:', error);
+    console.error('❌ Ошибка при закрытии базы данных MongoDB:', error);
   }
 };
 

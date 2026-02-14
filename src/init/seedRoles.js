@@ -1,21 +1,28 @@
-const Role = require('../models/role'); 
+const Role = require('../models/platformRole'); 
 const { ALL_PERMISSIONS } = require('../constants/permissions');
 
 const seedRoles = async () => {
     try {
         // Обновляем админа или создаем, если его нет
         await Role.findOneAndUpdate(
-            { name: 'SuperAdmin' },
+            { key: 'superadmin' }, // Ищем по уникальному ключу 'key'
             {
+                label: 'Системный администратор', // Название для отображения
                 permissions: ALL_PERMISSIONS,
                 isSystem: true,
                 description: 'Полный доступ ко всем функциям системы'
             },
-            { upsert: true, returnDocument: 'after' }
+            { 
+                upsert: true, 
+                returnDocument: 'after',
+                runValidators: true // Проверка соответствия схеме при вставке
+            }
         );
-        console.log('✅ Инициализация ролей успешно завершена');
+        
+        console.log('✅ Инициализация системных ролей для управления платформой успешно завершена');
     } catch (error) {
-        console.error('❌ Ошибка при заполнении ролей:', error);
+        // Выводим только сообщение, чтобы не загромождать лог стеком при ошибке схемы
+        console.error('❌ Ошибка при инициализации системных ролей для управления платформой:', error.message);
     }
 };
 

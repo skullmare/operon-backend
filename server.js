@@ -3,18 +3,21 @@ require('dotenv').config(); // Загружаем переменные окру�
 const app = require('./src/app');
 const { connectDB, disconnectDB } = require('./config/database');
 const { seedRoles } = require('./src/init/seedRoles');
+const { seedAgentRoles } = require('./src/init/seedAgentRoles');
+const { seedSuperAdmin } = require('./src/init/seedSuperAdmin');
 
 const PORT = process.env.PORT || 3000;
 let server;
 
-// Запуск сервера ПОСЛЕ подключения к БД
 const startServer = async () => {
   try {
     // 1. Сначала подключаемся к БД
     await connectDB();
-    // 2. Проверяем системные записи в базе данных
+    // 2. Инициализируем системные записи в базе данных
     await seedRoles();
-    // 3. Потом запускаем сервер
+    await seedAgentRoles();
+    await seedSuperAdmin();
+    // 3. Запускаем сервер
     server = app.listen(PORT, () => {
       console.log(`🚀 Сервер запущен на порту ${PORT}`);
       console.log(`🔗 http://localhost:${PORT}`);

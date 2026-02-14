@@ -61,4 +61,4 @@ const getPermissionsForUI = () => {
     }));
 };
 
-module.exports = { PERMISSIONS_CONFIG, ALL_PERMISSIONS };
+module.exports = { PERMISSIONS_CONFIG, ALL_PERMISSIONS, getPermissionsForUI };
