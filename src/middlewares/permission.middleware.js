@@ -15,10 +15,13 @@ const checkPermission = (requiredPermissions) => {
                 return res.status(403).json({ message: 'Доступ запрещен' });
             }
 
-            // Проверяем: есть ли у юзера хотя бы одно из требуемых прав?
-            const hasPermission = permissionsArray.some(p => 
+            // Проверяем: есть ли у юзера Все права из списка
+            const hasPermission = permissionsArray.every()(p => 
                 user.role.permissions.includes(p)
             );
+            // Есть ли нужно проверить у юзера хотя
+            // бы одно из требуемых прав то вместо .every
+            // используем метод .some
 
             if (!hasPermission) {
                 return res.status(403).json({ 
