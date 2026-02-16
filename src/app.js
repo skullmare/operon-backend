@@ -1,15 +1,16 @@
 // src/app.js
 const express = require('express');
+const cookieParser = require('cookie-parser'); 
+
+const apiRoutes = require('./routes/user.routes');
+const authRoutes = require('./routes/auth.routes');
+
 const app = express();
 
-// ==================== MIDDLEWARE ====================
-// Для парсинга JSON из тела запроса
 app.use(express.json());
-
-// Для парсинга данных из форм (urlencoded)
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check для мониторинга
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
@@ -18,12 +19,9 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Роуты API
-const apiRoutes = require('./routes/user.routes');
 app.use('/api/v1/user', apiRoutes);
+app.use('/api/v1/auth', authRoutes);
 
-// ==================== ОБРАБОТКА ОШИБОК ====================
-// 404 - Роут не найден
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'Not Found',
@@ -31,7 +29,6 @@ app.use((req, res) => {
   });
 });
 
-// Централизованная обработка ошибок
 app.use((err, req, res, next) => {
   console.error('Ошибка:', err);
   

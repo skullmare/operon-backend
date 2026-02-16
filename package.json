@@ -22,8 +22,10 @@
   "homepage": "https://github.com/skullmare/operon-backend#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1"
   },
   "devDependencies": {

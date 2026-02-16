@@ -1,14 +1,14 @@
 require('dotenv').config(); // Загружаем переменные окружения
 const User = require('../models/platformUser');
 const Role = require('../models/platformRole');
-const bcrypt = require('bcryptjs'); // Рекомендую установить: npm install bcryptjs
+const bcrypt = require('bcryptjs');
 
 const login = process.env.LOGIN_SUPER_ADMIN;
 const password = process.env.PASSWORD_SUPER_ADMIN;
 
 const seedSuperAdmin = async () => {
     try {
-        // 1. Находим системную роль СуперАдмина по ключу
+        // 1. Находим системную роль
         const adminRole = await Role.findOne({ key: 'superadmin' });
 
         if (!adminRole) {
@@ -16,15 +16,15 @@ const seedSuperAdmin = async () => {
             return;
         }
 
-        // 2. Проверяем, существует ли уже админ с таким логином
+        // 2. Проверяем, существует ли уже админ
         const adminExists = await User.findOne({ login: login });
 
         if (adminExists) {
-            console.log('✅ Аккаунт системного администратора уже существует, пропуск создания');
+            console.log('ℹ️  Аккаунт системного администратора уже существует, пропуск создания');
             return;
         }
 
-        // 3. Хешируем пароль (никогда не храните пароли в чистом виде!)
+        // 3. Хешируем пароль
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 

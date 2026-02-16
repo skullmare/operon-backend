@@ -11,8 +11,10 @@ const PERMISSIONS_CONFIG = {
     AGENT_USERS: {
         label: "Пользователи",
         actions: {
-            READ: { key: 'agentUsers.read', label: 'Просмотр списка пользователей ИИ' },
-            UPDATE: { key: 'agentUsers.update', label: 'Управление правами доступа к ИИ' },
+            READ: { key: 'agentUsers.read', label: 'Просмотр списка пользователей ИИ агента' },
+            CREATE: { key: 'agentUsers.create', label: 'Добавление новых пользователей ИИ агента' },
+            UPDATE: { key: 'agentUsers.update', label: 'Управление правами доступа к ИИ агенту' },
+            DELETE: { key: 'agentUsers.delete', label: 'Удаление пользователей ИИ агента' },
         }
     },
     TOPICS: {
