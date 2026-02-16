@@ -1,8 +1,15 @@
-// routes/user.routes.js
-const express = require('express');
-const router = express.Router();
-const UserController = require('../controllers/user.controller');
+const router = require('express').Router();
+const userController = require('../controllers/user.controller');
+const { auth } = require('../middlewares/auth.middleware');
+const checkPermission = require('../middlewares/permission.middleware');
 
-router.get('/:id', UserController.getUserById);
+// Сначала проверяем, что юзер залогинен (auth), 
+// потом — есть ли у него право (checkPermission)
+router.get(
+    '/list',
+    auth,
+    checkPermission('platformUsers.read'),
+    userController.getUsers
+);
 
 module.exports = router;

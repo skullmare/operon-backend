@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, refresh } = require('../controllers/auth.controller');
+const { login, refresh, me } = require('../controllers/auth.controller');
 const { auth } = require('../middlewares/auth.middleware');
 
 // Публичные роуты
@@ -12,11 +12,6 @@ router.post('/refresh', refresh);
 
 // Защищенный роут (для проверки работы авторизации)
 // GET /api/auth/me
-router.get('/me', auth, (req, res) => {
-    res.json({
-        message: 'Доступ разрешен',
-        user: req.user
-    });
-});
+router.get('/me', auth, me);
 
 module.exports = router;
