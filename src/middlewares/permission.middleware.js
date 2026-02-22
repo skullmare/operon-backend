@@ -16,16 +16,13 @@ const checkPermission = (requiredPermissions) => {
             }
 
             // Проверяем: есть ли у юзера Все права из списка
-            const hasPermission = permissionsArray.every()(p => 
+            const hasPermission = permissionsArray.every(p => 
                 user.role.permissions.includes(p)
             );
-            // Есть ли нужно проверить у юзера хотя
-            // бы одно из требуемых прав то вместо .every
-            // используем метод .some
 
             if (!hasPermission) {
                 return res.status(403).json({ 
-                    message: `Недостаточно прав. Требуется одно из: ${permissionsArray.join(', ')}` 
+                    message: `Недостаточно прав. Требуется: ${permissionsArray.join(', ')}` 
                 });
             }
 

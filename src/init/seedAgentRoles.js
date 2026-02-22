@@ -2,7 +2,7 @@ const AgentRole = require('../models/agentRole');
 
 const seedAgentRoles = async () => {
     const roles = [
-        { label: 'Заказчик', key: 'client', description: 'Роль для доступа к ИИ агенту от имени заказчика' },
+        { label: 'Застройщик', key: 'client', description: 'Роль для доступа к ИИ агенту от имени застройщика' },
         { label: 'Партнер', key: 'partner', description: 'Роль для доступа к ИИ агенту от имени партнера' }
     ];
 
