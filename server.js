@@ -1,10 +1,11 @@
 // server.js
 require('dotenv').config(); // Загружаем переменные окружения
 const app = require('./src/app');
-const { connectDB, disconnectDB } = require('./config/database');
+const { connectDB, disconnectDB } = require('./config/mongo');
 const { seedRoles } = require('./src/init/seedRoles');
 const { seedAgentRoles } = require('./src/init/seedAgentRoles');
 const { seedSuperAdmin } = require('./src/init/seedSuperAdmin');
+const { initQdrant } = require('./src/init/initQdrant');
 
 const PORT = process.env.PORT || 3000;
 let server;
@@ -17,7 +18,9 @@ const startServer = async () => {
     await seedRoles();
     await seedAgentRoles();
     await seedSuperAdmin();
-    // 3. Запускаем сервер
+    // 3. Инициализируем векторную базу данных
+    await initQdrant();
+    // 4. Запускаем сервер
     server = app.listen(PORT, () => {
       console.log(`🚀 Сервер запущен на порту ${PORT}`);
       console.log(`🔗 http://localhost:${PORT}`);

@@ -21,10 +21,13 @@
   },
   "homepage": "https://github.com/skullmare/operon-backend#readme",
   "dependencies": {
+    "@qdrant/js-client-rest": "^1.17.0",
+    "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "form-data": "^4.0.5",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1"
   },
