@@ -23,7 +23,7 @@ router.get(
     '/',
     auth,
     checkPermission('topics.read'),
-    topicsController.getTopics
+    topicsController.getAll
 );
 
 /**
@@ -34,7 +34,7 @@ router.get(
     '/:id',
     auth,
     checkPermission('topics.read'),
-    topicsController.getTopicById
+    topicsController.getOne
 );
 
 /**

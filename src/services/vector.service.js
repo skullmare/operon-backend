@@ -38,7 +38,7 @@ async function getDoclingChunks(text) {
         filename: 'content.md',
         contentType: 'text/markdown'
     });
-    
+
     formData.append('chunking_max_tokens', '800');
     formData.append('chunking_merge_peers', 'true');
 
@@ -86,13 +86,13 @@ async function syncTopicToQdrant(topic) {
         // --- НОВЫЙ ЭТАП: ОБОГАЩЕНИЕ КОНТЕНТА ---
         // Добавляем информацию о файлах в конец текста, чтобы Docling их проиндексировал
         let enhancedContent = topic.content;
-        
+
         if (topic.files && topic.files.length > 0) {
             const filesMarkdown = topic.files
-                .map(f => `* Документ: ${f.description}. Ссылка: ${f.url}`)
-                .join('\n');
-            
-            enhancedContent += `\n\n### Приложенные дополнительные материалы и файлы:\n${filesMarkdown}`;
+                .map((f, i) => `${i + 1}) Наименование файла: ${f.name}. Описание: ${f.description}. [Ссылка](${f.url})`)
+                .join('\n\n');
+
+            enhancedContent += `\n\nПриложенные дополнительные материалы и файлы:\n\n${filesMarkdown}`;
         }
         // ---------------------------------------
 
@@ -123,20 +123,20 @@ async function syncTopicToQdrant(topic) {
         }));
 
         // ШАГ 5: Загружаем в Qdrant
-        await qdrantClient.upsert(COLLECTION_NAME, { 
-            wait: true, 
-            points 
+        await qdrantClient.upsert(COLLECTION_NAME, {
+            wait: true,
+            points
         });
 
         console.log(`✅ Топик "${topic.name}" векторизован. Поинтов: ${points.length}. Файлов встроено: ${topic.files.length}`);
         return true;
     } catch (error) {
         console.error("❌ Ошибка в vector.service:", error.message);
-        throw error; 
+        throw error;
     }
 }
 
-module.exports = { 
-    syncTopicToQdrant, 
-    deleteTopicFromQdrant 
+module.exports = {
+    syncTopicToQdrant,
+    deleteTopicFromQdrant
 };
