@@ -3,16 +3,17 @@ const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 const logHandler = require('../../utils/logHandler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
+const User = require('../../models/platformUser');
 
 module.exports = async (req, res) => {
     const token = req.cookies.refreshToken;
-    
+
     if (!token) {
         return errorHandler(res, 401, 'Сессия истекла');
     }
 
     const decoded = authService.validateRefreshToken(token);
-    
+
     if (!decoded) {
         await logHandler({
             action: ACTIONS_CONFIG.AUTH.actions.REFRESH_INVALID.key,
@@ -26,14 +27,22 @@ module.exports = async (req, res) => {
         ]);
     }
 
-    const { accessToken, refreshToken } = authService.generateTokens({ 
-        id: decoded.id, 
-        role: decoded.role 
+    try {
+        await User.findByIdAndUpdate(decoded.id, {
+            lastLogin: new Date()
+        });
+    } catch (error) {
+        console.error('Ошибка при обновлении lastLogin:', error);
+    }
+
+    const { accessToken, refreshToken } = authService.generateTokens({
+        id: decoded.id,
+        role: decoded.role
     });
 
-    res.cookie('refreshToken', refreshToken, { 
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production' 
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
     });
 
     return successHandler(res, 200, 'Токен успешно обновлен', { accessToken });

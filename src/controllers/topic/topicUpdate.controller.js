@@ -32,17 +32,6 @@ module.exports = async (req, res) => {
         const { body: data } = validation.data;
         const topic = await Topic.findById(id);
 
-        // 2. Проверка существования документа
-        if (!topic) {
-            // Логирование пропущено: экшен отсутствует в ACTIONS_CONFIG
-            return errorHandler(
-                res,
-                404,
-                'Объект не найден',
-                [{ path: 'id', message: 'Тема не существует' }]
-            );
-        }
-
         const update = { $set: {}, $push: {}, $pull: {} };
         let changeSummary = [];
 

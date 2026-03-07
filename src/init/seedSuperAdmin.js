@@ -35,7 +35,8 @@ const seedSuperAdmin = async () => {
             email: '',
             password: hashedPassword,
             role: adminRole._id, // Привязываем ID роли
-            status: 'active'
+            status: 'active',
+            isSystem: true
         });
 
         await superAdmin.save();

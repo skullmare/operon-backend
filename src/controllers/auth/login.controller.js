@@ -9,7 +9,7 @@ const { ACTIONS_CONFIG } = require('../../constants/actions');
 module.exports = async (req, res) => {
     try {
         const { login: userLogin, password } = req.body;
-        
+
         // Выбираем поле password явно, так как в схеме оно помечено select: false
         const user = await User.findOne({ login: userLogin }).select('+password');
 
@@ -27,12 +27,20 @@ module.exports = async (req, res) => {
             ]);
         }
 
+        try {
+            await User.findByIdAndUpdate(user._id, {
+                lastLogin: new Date()
+            });
+        } catch (error) {
+            console.error('Ошибка при обновлении lastLogin:', error);
+        }
+
         const payload = { id: user._id, role: user.role };
         const { accessToken, refreshToken } = authService.generateTokens(payload);
 
-        res.cookie('refreshToken', refreshToken, { 
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production' 
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production'
         });
 
         // 2. Успешный вход (LOGIN_SUCCESS)

@@ -35,17 +35,6 @@ module.exports = async (req, res) => {
             .populate('updatedBy', 'firstName lastName photoUrl')
             .lean();
 
-        // 3. Проверка на существование
-        if (!result) {
-            // Экшена "Not Found" нет в ACTIONS_CONFIG — логирование в БД пропущено
-            return errorHandler(
-                res,
-                404,
-                'Не найдено',
-                [{ path: 'id', message: `Тема с ID ${id} не существует` }]
-            );
-        }
-
         // 4. Успешный ответ (без логирования в БД согласно правилам чтения)
         return successHandler(res, 200, 'Данные темы получены', result);
 

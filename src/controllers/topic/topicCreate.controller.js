@@ -1,6 +1,5 @@
-const User = require('../../models/platformUser'); // Предполагаю путь к модели
-const { createUserSchema } = require('../../schemas/user.schema');
-const bcrypt = require('bcryptjs');
+const Topic = require('../../models/topic');
+const { createTopicSchema } = require('../../schemas/topic.schema');
 
 // Подключаем утилиты и конфиг
 const successHandler = require('../../utils/successHandler');
@@ -9,17 +8,18 @@ const logHandler = require('../../utils/logHandler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
-    const currentUserId = req.user?.id;
+    const userId = req.user?.id;
 
     try {
-        // 1. Валидация входных данных (body)
-        const validation = await createUserSchema.safeParseAsync({ body: req.body });
+        // 1. Валидация входных данных
+        const validation = await createTopicSchema.safeParseAsync({ body: req.body });
         
         if (!validation.success) {
+            // Экшена для ошибки валидации нет в ACTIONS_CONFIG — только возвращаем ответ
             return errorHandler(
                 res,
                 400,
-                'Ошибка валидации данных пользователя',
+                'Ошибка валидации',
                 validation.error.issues.map(err => ({
                     path: err.path.filter(p => p !== 'body').join('.'),
                     message: err.message
@@ -29,51 +29,38 @@ module.exports = async (req, res) => {
 
         const { body: data } = validation.data;
 
-        // 2. Проверка уникальности логина (дополнительный слой безопасности)
-        const existingUser = await User.findOne({ login: data.login });
-        if (existingUser) {
-            return errorHandler(res, 400, 'Пользователь с таким логином уже зарегистрирован');
-        }
-
-        // 3. Хеширование пароля
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(data.password, salt);
-
-        // 4. Создание записи в БД
-        const newUser = await User.create({
+        // 2. Создание записи в БД
+        const result = await Topic.create({
             ...data,
-            password: hashedPassword
+            createdBy: userId,
+            status: 'review'
         });
 
-        // 5. Логирование успешного действия (PLATFORM_USER_CREATE)
+        // 3. Логирование успешного действия (TOPIC_CREATE)
         await logHandler({
-            action: ACTIONS_CONFIG.PLATFORM_USERS.actions.CREATE.key,
-            message: `Создан новый сотрудник: ${newUser.login} (${newUser.firstName} ${newUser.lastName})`,
-            userId: currentUserId,
-            entityId: newUser._id,
+            action: ACTIONS_CONFIG.TOPICS.actions.CREATE.key,
+            message: `Создана новая тема: "${result.name}"`,
+            userId,
+            entityId: result._id,
             status: 'success'
         });
 
-        // Подготовка данных для ответа (исключаем пароль)
-        const responseData = newUser.toObject();
-        delete responseData.password;
-
-        // 6. Успешный ответ
-        return successHandler(res, 201, 'Сотрудник успешно создан', responseData);
+        // 4. Успешный ответ (статус 201 Created)
+        return successHandler(res, 201, 'Тема успешно создана и отправлена на проверку', result);
 
     } catch (error) {
-        // Логируем системную ошибку (PLATFORM_USER_ERROR)
+        // Логируем системную ошибку темы (TOPIC_ERROR)
         await logHandler({
-            action: ACTIONS_CONFIG.PLATFORM_USERS.actions.SERVER_ERROR.key,
-            message: `Критическая ошибка при создании сотрудника: ${error.message}`,
-            userId: currentUserId,
+            action: ACTIONS_CONFIG.TOPICS.actions.SERVER_ERROR.key,
+            message: `Ошибка сервера при создании темы: ${error.message}`,
+            userId,
             status: 'error'
         });
 
         return errorHandler(
             res,
             500,
-            'Ошибка сервера при добавлении сотрудника',
+            'Ошибка сервера при создании темы',
             [{ path: 'server', message: error.message }]
         );
     }

@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
         enum: ['active', 'blocked'],
         default: 'active'
     },
+    isSystem: {
+        type: Boolean,
+        default: false
+    },
     lastLogin: {
         type: Date
     }

@@ -28,15 +28,6 @@ module.exports = async (req, res) => {
 
         // 2. Поиск темы перед удалением
         const topic = await Topic.findById(id).lean();
-        if (!topic) {
-            // Экшена "Not Found" нет в ACTIONS_CONFIG — логирование пропущено
-            return errorHandler(
-                res, 
-                404, 
-                'Не найдено', 
-                [{ path: 'id', message: 'Тема не существует или уже удалена' }]
-            );
-        }
 
         const fileUrls = topic.files?.map(f => f.url) || [];
         const topicName = topic.name || 'Без названия';

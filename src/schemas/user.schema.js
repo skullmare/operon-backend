@@ -21,13 +21,24 @@ const loginIsUnique = (currentUserId = null) => async (login, ctx) => {
     if (currentUserId) {
         query._id = { $ne: currentUserId };
     }
-    
+
     const exists = await mongoose.model('User').exists(query);
     if (exists) {
         ctx.addIssue({
             code: 'custom',
-            path: ['login'], 
+            path: ['login'],
             message: 'Этот логин уже занят другим пользователем'
+        });
+    }
+};
+
+const isNotSystem = (modelName) => async (id, ctx) => {
+    const doc = await mongoose.model(modelName).findById(id).select('isSystem');
+    if (doc && doc.isSystem) {
+        ctx.addIssue({
+            code: 'custom',
+            message: `Системного пользователя нельзя изменять или удалять`,
+            path: ['id'] // указываем, что проблема в ID
         });
     }
 };
@@ -46,7 +57,7 @@ const createUserSchema = z.object({
             .trim()
             .min(3, "Логин должен быть не менее 3 символов")
             .transform(val => val.toLowerCase())
-            .superRefine(loginIsUnique()), 
+            .superRefine(loginIsUnique()),
         email: z.string().email("Некорректный email").lowercase().optional(),
         password: z.string().min(10, "Пароль должен быть не менее 10 символов"),
         role: objectId.pipe(z.string().superRefine(dbExists('Role'))),
@@ -60,7 +71,9 @@ const createUserSchema = z.object({
  */
 const updateUserSchema = z.object({
     params: z.object({
-        id: objectId.pipe(z.string().superRefine(dbExists('User')))
+        id: objectId
+            .pipe(z.string().superRefine(dbExists('User')))
+            .pipe(z.string().superRefine(isNotSystem('User')))
     }),
     body: z.object({
         firstName: z.string().trim().min(1).optional(),
@@ -100,7 +113,9 @@ const getOneUserSchema = z.object({
 
 const deleteUserSchema = z.object({
     params: z.object({
-        id: objectId.pipe(z.string().superRefine(dbExists('User')))
+        id: objectId
+            .pipe(z.string().superRefine(dbExists('User')))
+            .pipe(z.string().superRefine(isNotSystem('User')))
     })
 });
 
