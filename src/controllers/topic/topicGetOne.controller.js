@@ -30,7 +30,9 @@ module.exports = async (req, res) => {
         // 2. Поиск темы с раскрытием связей (populate)
         const result = await Topic.findById(id)
             .populate('metadata.category', 'name')
-            .populate('metadata.accessibleByRoles', 'label')
+            .populate('metadata.accessibleByRoles', 'name')
+            .populate('createdBy', 'firstName lastName photoUrl') 
+            .populate('updatedBy', 'firstName lastName photoUrl')
             .lean();
 
         // 3. Проверка на существование

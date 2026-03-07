@@ -2,14 +2,7 @@ const mongoose = require('mongoose');
 
 const agentRoleSchema = new mongoose.Schema({
   // Название на русском
-  label: { 
-    type: String, 
-    required: true, 
-    unique: true,
-    trim: true 
-  },
-  // Название на английском
-  key: {
+  name: { 
     type: String, 
     required: true, 
     unique: true,

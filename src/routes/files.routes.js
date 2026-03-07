@@ -7,7 +7,6 @@ const fileController = require('../controllers/files/index');
 
 // Middleware
 const { auth } = require('../middlewares/auth.middleware');
-const checkPermission = require('../middlewares/permission.middleware');
 
 // Конфигурация Multer (память для быстрой пересылки в S3)
 const upload = multer({ 
@@ -18,7 +17,6 @@ const upload = multer({
 router.post(
     '/upload',
     auth,
-    checkPermission('files.upload'),
     upload.single('file'),
     fileController.uploadFile
 );

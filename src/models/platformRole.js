@@ -3,14 +3,7 @@ const { ALL_PERMISSIONS } = require('../constants/permissions');
 
 const roleSchema = new mongoose.Schema({
     // Название: "Администратор", "Оператор"
-    label: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
-    // Название на английском: "Admin", "Manager"
-    key: {
+    name: {
         type: String,
         required: true,
         unique: true,

@@ -9,7 +9,7 @@ const password = process.env.PASSWORD_SUPER_ADMIN;
 const seedSuperAdmin = async () => {
     try {
         // 1. Находим системную роль
-        const adminRole = await Role.findOne({ key: 'superadmin' });
+        const adminRole = await Role.findOne({ name: 'Системный администратор' });
 
         if (!adminRole) {
             console.error('❌ Ошибка: Роль "superadmin" не найдена. Сначала запустите seedRoles!');

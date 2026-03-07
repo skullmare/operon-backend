@@ -90,7 +90,10 @@ module.exports = async (req, res) => {
 
         // 6. Выполнение обновления в БД
         const result = await Topic.findByIdAndUpdate(id, update, { new: true, runValidators: true })
-            .populate('metadata.category', 'name');
+            .populate('metadata.category', 'name')
+            .populate('metadata.accessibleByRoles', 'name')
+            .populate('createdBy', 'firstName lastName photoUrl') 
+            .populate('updatedBy', 'firstName lastName photoUrl')
 
         // 7. Логирование действия (TOPIC_UPDATE)
         await logHandler({

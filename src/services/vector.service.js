@@ -64,9 +64,9 @@ async function syncTopicToQdrant(topic) {
             metadata: {
                 topicId,
                 name: topic.name,
-                category: topic.metadata.category?._id?.toString() || topic.metadata.category?.toString(),
-                accessibleByRoles: (topic.metadata.accessibleByRoles || []).map(r => r.toString()),
-                files: (topic.files || []).map(f => ({ url: f.url, description: f.description }))
+                category: topic.metadata.category?.name?.toString(),
+                accessibleByRoles: (topic.metadata.accessibleByRoles || []).map(r => r._id.toString()),
+                files: (topic.files || []).map(f => ({ url: f.url, name: f.name, description: f.description }))
             }
         }
     }));

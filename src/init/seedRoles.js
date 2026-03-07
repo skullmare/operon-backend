@@ -5,9 +5,9 @@ const seedRoles = async () => {
     try {
         // Обновляем админа или создаем, если его нет
         await Role.findOneAndUpdate(
-            { key: 'superadmin' }, // Ищем по уникальному ключу 'key'
+            { name: 'Системный администратор' },
             {
-                label: 'Системный администратор', // Название для отображения
+                name: 'Системный администратор',
                 permissions: ALL_PERMISSIONS,
                 isSystem: true,
                 description: 'Полный доступ ко всем функциям системы'

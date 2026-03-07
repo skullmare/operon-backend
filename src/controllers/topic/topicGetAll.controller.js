@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
         if (status) filter.status = status;
         if (search) {
             filter.$or = [
-                { name: { $regex: search, $options: 'i' } }, 
+                { name: { $regex: search, $options: 'i' } },
                 { content: { $regex: search, $options: 'i' } }
             ];
         }
@@ -43,6 +43,9 @@ module.exports = async (req, res) => {
         const [result, total] = await Promise.all([
             Topic.find(filter)
                 .populate('metadata.category', 'name')
+                .populate('metadata.accessibleByRoles', 'name')
+                .populate('createdBy', 'firstName lastName photoUrl')
+                .populate('updatedBy', 'firstName lastName photoUrl')
                 .limit(limit)
                 .skip((page - 1) * limit)
                 .sort({ updatedAt: -1 })

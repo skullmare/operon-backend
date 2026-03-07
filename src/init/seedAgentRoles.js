@@ -2,16 +2,16 @@ const AgentRole = require('../models/agentRole');
 
 const seedAgentRoles = async () => {
     const roles = [
-        { label: 'Застройщик', key: 'client', description: 'Роль для доступа к ИИ агенту от имени застройщика' },
-        { label: 'Партнер', key: 'partner', description: 'Роль для доступа к ИИ агенту от имени партнера' }
+        { name: 'Застройщик', description: 'Роль для доступа к ИИ агенту от имени застройщика' },
+        { name: 'Партнер', description: 'Роль для доступа к ИИ агенту от имени партнера' }
     ];
 
     try {
         for (const role of roles) {
             await AgentRole.findOneAndUpdate(
-                { key: role.key },
+                { name: role.name },
                 {
-                    label: role.label,
+                    name: role.name,
                     description: role.description
                 },
                 { upsert: true, returnDocument: 'after', runValidators: true }
