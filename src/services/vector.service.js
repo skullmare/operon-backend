@@ -48,10 +48,6 @@ async function syncTopicToQdrant(topic) {
     await deleteTopicFromQdrant(topicId);
 
     let content = topic.content;
-    if (topic.files?.length) {
-        const filesMd = topic.files.map((f, i) => `${i + 1}) ${f.name}: ${f.description}. [Link](${f.url})`).join('\n\n');
-        content += `\n\nДополнительные материалы:\n\n${filesMd}`;
-    }
 
     const chunks = await getDoclingChunks(content);
     const embeddings = await getEmbeddings(chunks);

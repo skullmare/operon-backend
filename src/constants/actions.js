@@ -43,13 +43,14 @@ const ACTIONS_CONFIG = {
             SERVER_ERROR: { key: 'CATEGORY_ERROR', label: 'Ошибка в модуле категорий' },
         }
     },
-    ROLES: {
+    PLATFORM_ROLES: {
         label: "Роли платформы",
         entity: 'Role',
         actions: {
             CREATE: { key: 'ROLE_CREATE', label: 'Создание роли' },
             UPDATE: { key: 'ROLE_UPDATE', label: 'Редактирование роли' },
             DELETE: { key: 'ROLE_DELETE', label: 'Удаление роли' },
+            DELETE_MANY: { key: 'ROLE_DELETE_MANY', label: 'Удаление нескольких ролей' },
         }
     },
     AGENT_ROLES: {

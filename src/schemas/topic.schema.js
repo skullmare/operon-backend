@@ -23,10 +23,10 @@ const dbAllExist = (modelName) => async (ids, ctx) => {
 // --- Подсхемы ---
 
 const categorySchema = objectId.pipe(
-    z.string().superRefine(dbExists('TopicCategory'))
+    z.string("Категория топика обязательна").superRefine(dbExists('TopicCategory'))
 );
 
-const rolesSchema = z.array(objectId)
+const rolesSchema = z.array(objectId, "Роли должны быть массивом")
     .min(1, "Укажите хотя бы одну роль")
     .pipe(z.array(z.string()).superRefine(dbAllExist('AgentRole')));
 
@@ -36,9 +36,9 @@ const metadataSchema = z.object({
 });
 
 const fileSchema = z.object({
-    name: z.string().trim().min(1, "Имя файла обязательно"),
-    description: z.string().trim().min(1, "Описание файла обязательно"),
-    url: z.string().url("Некорректная ссылка"),
+    name: z.string('Наименование файла обязательно').trim().min(1, "Наименование файла не может быть пустым"),
+    description: z.string('Описание файла обязательно').trim().min(1, "Описание файла не может быть пустым"),
+    url: z.string('Поле ссылка обязательно').url("Некорректный формат ссылки"),
     fileType: z.string().optional()
 });
 
@@ -46,8 +46,8 @@ const fileSchema = z.object({
 
 const createTopicSchema = z.object({
     body: z.object({
-        name: z.string().trim().min(1, "Наименование топика обязательно"),
-        content: z.string().trim().min(1, "Контент топика обязателен"),
+        name: z.string("Наименование топика обязательно").trim().min(1, "Наименование топика не может быть пустым"),
+        content: z.string("Содержание топика обязательно").trim().min(1, "Содержание топика не может быть пустым"),
         metadata: metadataSchema,
         files: z.array(fileSchema).optional()
     })
@@ -58,21 +58,22 @@ const patchTopicSchema = z.object({
         id: objectId.pipe(z.string().superRefine(dbExists('Topic'))) 
     }),
     body: z.object({
-        name: z.string().trim().min(1).optional(),
-        content: z.string().trim().min(1).optional(),
+        name: z.string().trim().min(1, "Наименование топика не может быть пустым").optional(),
+        content: z.string().trim().min(1, "Содержание топика не может быть пустым").optional(),
         metadata: metadataSchema.partial().optional(),
         files: z.array(fileSchema).optional(),
-        filesToDelete: z.array(z.string().url()).optional()
+        filesToDelete: z.array(z.string().url(), "Список удаляемых файлов не может быть пустым").optional(),
+        status: z.enum(['review', 'archived'], "Недопустимый статус. Доступны: review, archived").optional()
     })
 });
 
 const getTopicsSchema = z.object({
     query: z.object({
-        page: z.string().regex(/^\d+$/).transform(Number).default("1"),
-        limit: z.string().regex(/^\d+$/).transform(Number).default("10"),
+        page: z.string().regex(/^\d+$/, "Номер страницы должен быть числом").transform(Number).default("1"),
+        limit: z.string().regex(/^\d+$/, "Лимит должен быть числом").transform(Number).default("10"),
         search: z.string().optional(),
         category: objectId.optional(),
-        status: z.enum(['review', 'approved', 'archived']).optional()
+        status: z.enum(['review', 'approved', 'archived'], "Некорректный статус для фильтрации").optional()
     })
 });
 

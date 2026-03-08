@@ -1,7 +1,7 @@
 const Topic = require('../../models/topic');
 const { deleteMultipleFilesFromS3 } = require('../../services/storage.service');
 const { patchTopicSchema } = require('../../schemas/topic.schema');
-
+const { deleteTopicFromQdrant } = require('../../services/vector.service');
 // Утилиты и конфиг
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
@@ -54,7 +54,6 @@ module.exports = async (req, res) => {
         ['name', 'content'].forEach(field => {
             if (data[field]) {
                 update.$set[field] = data[field];
-                update.$set.status = 'review'; 
                 update.$set['vectorData.isIndexed'] = false;
                 changeSummary.push(`изменено поле: ${field}`);
             }
@@ -66,6 +65,13 @@ module.exports = async (req, res) => {
                 update.$set[`metadata.${key}`] = data.metadata[key];
             });
             changeSummary.push('обновлены метаданные');
+        }
+        
+        if (data.status == 'archived') {
+            deleteTopicFromQdrant(id)
+            update.$set.status = 'archived'; 
+        } else {
+            update.$set.status = 'review'; 
         }
 
         // Очистка пустых операторов
