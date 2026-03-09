@@ -23,8 +23,8 @@
 ### 1. Требования
 
 * Установленный **Docker** и **Docker Compose**
-* Развернутые внешние сервисы **MpngoDB**, **Qdrant**, **Docling**
-* **Node.js** v18 или выше
+* Развернутые внешние сервисы **MongoDB**, **Qdrant**, **Docling**
+* **Node.js v18** или выше
 * Аккаунты в **Yandex Cloud** и **OpenRouter**
 
 ### 2. Клонирование репозитория
