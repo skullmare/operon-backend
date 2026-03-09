@@ -36,12 +36,12 @@ const categoryNameIsUnique = (currentCategoryId = null) => async (name, ctx) => 
  */
 const createCategorySchema = z.object({
     body: z.object({
-        name: z.string({ required_error: "Название обязательно" })
+        name: z.string("Название обязательно")
             .trim()
-            .min(2, "Название должно быть не менее 2 символов")
+            .min(1, "Название не может быть пустым")
             .max(50, "Название слишком длинное")
             .superRefine(categoryNameIsUnique()),
-        description: z.string().trim().optional()
+        description: z.string().trim().min(1, "Описание не может быть пустым").optional()
     })
 });
 
@@ -53,25 +53,23 @@ const updateCategorySchema = z.object({
         id: objectId
     }),
     body: z.object({
-        name: z.string().trim().min(2, "Название не может быть пустым").optional(),
-        description: z.string().trim().optional()
+        name: z.string().trim().min(1, "Название не может быть пустым").optional(),
+        description: z.string().trim().min(1, "Описание не может быть пустым").optional()
     })
 }).superRefine(async (data, ctx) => {
-    // Проверка существования
     const category = await mongoose.model('TopicCategory').findById(data.params.id);
     if (!category) {
         ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Категория не найдена' });
         return;
     }
 
-    // Если меняется имя, проверяем на уникальность
     if (data.body.name) {
         await categoryNameIsUnique(data.params.id)(data.body.name, ctx);
     }
 });
 
 /**
- * Схема удаления категории (перенос логики из pre-hook)
+ * Схема удаления одной категории
  */
 const deleteCategorySchema = z.object({
     params: z.object({
@@ -85,8 +83,8 @@ const deleteCategorySchema = z.object({
         return;
     }
 
-    // Проверка использования в топиках (аналог вашего pre-hook)
     const Topic = mongoose.model('Topic');
+    // Проверка через metadata.category (как в твоем примере)
     const count = await Topic.countDocuments({ 'metadata.category': data.params.id });
 
     if (count > 0) {
@@ -96,6 +94,39 @@ const deleteCategorySchema = z.object({
             message: `Нельзя удалить категорию "${category.name}", так как она используется в топиках (${count} шт.)`
         });
     }
+});
+
+/**
+ * НОВАЯ: Схема для массового удаления категорий (topicCategoriesDeleteList)
+ */
+const deleteCategoryListSchema = z.object({
+    body: z.object({
+        ids: z.array(objectId)
+            .min(1, "Список ID не может быть пустым")
+            .pipe(z.array(z.string()).superRefine(async (ids, ctx) => {
+                const TopicCategory = mongoose.model('TopicCategory');
+                const Topic = mongoose.model('Topic');
+
+                // 1. Проверяем существование всех категорий
+                const foundCategories = await TopicCategory.find({ _id: { $in: ids } });
+                if (foundCategories.length !== ids.length) {
+                    ctx.addIssue({
+                        code: 'custom',
+                        message: "Одна или несколько категорий не найдены"
+                    });
+                    return;
+                }
+
+                // 2. Проверяем использование любой из них в топиках
+                const usedInTopic = await Topic.exists({ 'metadata.category': { $in: ids } });
+                if (usedInTopic) {
+                    ctx.addIssue({
+                        code: 'custom',
+                        message: "Нельзя удалить выбранные категории: одна или несколько из них используются в топиках"
+                    });
+                }
+            }))
+    })
 });
 
 /**
@@ -115,6 +146,9 @@ const getAllCategoriesSchema = z.object({
     })
 });
 
+/**
+ * Схема получения одной категории
+ */
 const getOneCategorySchema = z.object({
     params: z.object({
         id: objectId
@@ -125,6 +159,7 @@ module.exports = {
     createCategorySchema,
     updateCategorySchema,
     deleteCategorySchema,
+    deleteCategoryListSchema, // Не забудь добавить в экспорт
     getOneCategorySchema,
     getAllCategoriesSchema
 };

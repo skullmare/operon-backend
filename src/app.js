@@ -8,6 +8,7 @@ const healthRoutes = require('./routes/health.routes');
 const topicRoutes = require('./routes/topics.routes');
 const fileRoutes = require('./routes/files.routes');
 const platformRoleRoutes = require('./routes/platformRoles.routes');
+const topicCategoriesRoutes = require('./routes/topicCategories.routes');
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/topics', topicRoutes);
 app.use('/api/v1/files', fileRoutes);
 app.use('/api/v1/platform/roles', platformRoleRoutes);
+app.use('/api/v1/topic/categories', topicCategoriesRoutes);
 
 // 1. Обработка несуществующих маршрутов (404)
 app.use((req, res) => {

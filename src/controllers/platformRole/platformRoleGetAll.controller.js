@@ -8,7 +8,15 @@ module.exports = async (req, res) => {
         const validation = await getAllRolesSchema.safeParseAsync({ query: req.query });
 
         if (!validation.success) {
-            return errorHandler(res, 400, 'Некорректные параметры запроса', validation.error.issues);
+            return errorHandler(
+                res,
+                400,
+                'Некорректные параметры запроса',
+                validation.error.issues.map(err => ({
+                    path: err.path.filter(p => p !== 'query').join('.'),
+                    message: err.message
+                }))
+            );
         }
 
         const { search, isSystem, page, limit } = validation.data.query;
