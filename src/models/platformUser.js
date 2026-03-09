@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    lastName: { // Исправлен регистр
+    lastName: {
         type: String,
         required: true,
         trim: true
@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        lowercase: true // Логин всегда в нижнем регистре
+        lowercase: true
     },
     email: {
         type: String,
         unique: true,
-        sparse: true, // Позволяет иметь null, если email не обязателен, но проверяет уникальность если он есть
+        sparse: true,
         trim: true,
         lowercase: true,
         match: [/^\S+@\S+\.\S+$/, 'Пожалуйста, введите корректный email']
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        select: false // Пароль не будет возвращаться в обычных запросах (безопасность!)
+        select: false
     },
     photoUrl: {
         type: String,
@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role', // Связь с моделью Role
+        ref: 'Role',
         required: true
     },
     status: {
@@ -51,9 +51,17 @@ const userSchema = new mongoose.Schema({
     },
     lastLogin: {
         type: Date
+    },
+    // --- ПОЛЯ ДЛЯ ВОССТАНОВЛЕНИЯ ПАРОЛЯ ---
+    resetPasswordToken: {
+        type: String,
+        select: false // Скрываем из обычных запросов
+    },
+    resetPasswordExpires: {
+        type: Date,
+        select: false // Скрываем из обычных запросов
     }
 }, {
-    // timestamps автоматически создаст createdAt и updatedAt
     timestamps: true 
 });
 

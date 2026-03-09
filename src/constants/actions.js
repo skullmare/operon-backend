@@ -88,7 +88,25 @@ const ACTIONS_CONFIG = {
             FILE_UPLOAD: { key: 'FILE_UPLOAD', label: 'Загрузка файла' },
             SERVER_ERROR: { key: 'SYSTEM_SERVER_ERROR', label: 'Критическая системная ошибка' },
         }
-    }
+    },
+    PROFILE: {
+        label: "Личный профиль",
+        entity: 'PlatformUser',
+        actions: {
+            UPDATE: { key: 'PROFILE_UPDATE', label: 'Обновление личных данных' },
+            SERVER_ERROR: { key: 'PROFILE_ERROR', label: 'Ошибка в модуле профиля' },
+        }
+    },
+    PASSWORD: {
+        label: "Пароль",
+        entity: 'PlatformUser',
+        actions: {
+            PASSWORD_RESET_REQUEST: { key: 'AUTH_PASSWORD_RESET_REQUEST', label: 'Запрос на восстановление пароля' },
+            PASSWORD_RESET_SUCCESS: { key: 'AUTH_PASSWORD_RESET_SUCCESS', label: 'Пароль успешно восстановлен' },
+            PASSWORD_CHANGE: { key: 'PROFILE_PASSWORD_CHANGE', label: 'Смена пароля' },
+            SERVER_ERROR: { key: 'PROFILE_ERROR', label: 'Ошибка в модуле профиля' },
+        }
+    },
 };
 
 /**

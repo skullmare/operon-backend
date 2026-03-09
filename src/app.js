@@ -4,6 +4,8 @@ const sendError = require('./utils/errorHandler'); // Импортируем т�
 
 const userRoutes = require('./routes/platformUsers.routes');
 const authRoutes = require('./routes/auth.routes');
+const profileRoutes = require('./routes/profile.routes');
+const passwordRoutes = require('./routes/password.routes');
 const healthRoutes = require('./routes/health.routes');
 const topicRoutes = require('./routes/topics.routes');
 const fileRoutes = require('./routes/files.routes');
@@ -20,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 // Маршруты
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/profile', profileRoutes);
+app.use('/api/v1/password', passwordRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/topics', topicRoutes);
 app.use('/api/v1/files', fileRoutes);
