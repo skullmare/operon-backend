@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        required: true,
         unique: true,
         sparse: true,
         trim: true,
@@ -37,8 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role',
-        required: true
+        ref: 'Role'
     },
     status: {
         type: String,

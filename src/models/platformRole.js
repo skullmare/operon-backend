@@ -10,14 +10,21 @@ const roleSchema = new mongoose.Schema({
         trim: true
     },
     // Массив ключей из конфига
-    permissions: [{
-        type: String,
-        enum: ALL_PERMISSIONS
-    }],
+    permissions: {
+        type: [String],
+        enum: ALL_PERMISSIONS,
+        validate: {
+            validator: function (v) {
+                return v && v.length > 0;
+            },
+            message: 'Список прав не может быть пустым'
+        }
+    },
 
     // Описание, чтобы админ понимал, зачем эта роль нужна
     description: {
         type: String,
+        required: true,
         trim: true
     },
 

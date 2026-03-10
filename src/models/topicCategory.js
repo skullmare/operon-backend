@@ -11,6 +11,7 @@ const topicCategorySchema = new mongoose.Schema({
   // Краткое описание, чтобы контент-менеджер не путался
   description: {
     type: String,
+    required: true,
     trim: true
   },
 }, {

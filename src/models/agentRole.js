@@ -11,6 +11,7 @@ const agentRoleSchema = new mongoose.Schema({
   // Описание, чтобы админ понимал, зачем эта роль нужна
   description: {
     type: String,
+    required: true,
     trim: true
   }
 }, {

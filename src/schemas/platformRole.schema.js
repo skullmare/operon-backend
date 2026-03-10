@@ -40,7 +40,7 @@ const createRoleSchema = z.object({
             .min(1, "Название роли не может быть пустым")
             .max(100, "Название роли не может быть более 100 символов")
             .superRefine(roleNameIsUnique()),
-        permissions: z.array(z.enum(ALL_PERMISSIONS, "Выбрано некорректное разрешение"), "Укажите список доступный разрешений для этой роли"),
+        permissions: z.array(z.enum(ALL_PERMISSIONS, "Выбрано некорректное разрешение")).min(1, "Список прав не может быть пустым"),
         description: z
             .string("Описание роли обязательно для заполнения")
             .trim()
