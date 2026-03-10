@@ -9,33 +9,16 @@ const logHandler = require('../../utils/logHandler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
-    const { id } = req.params;
     const userId = req.user?.id;
+    const { id } = req.validatedData.params;
+    const data = req.validatedData.body;
 
     try {
-        // 1. Валидация входных данных
-        const validation = await patchTopicSchema.safeParseAsync({ params: req.params, body: req.body });
-
-        if (!validation.success) {
-            // Логирование пропущено: экшен отсутствует в ACTIONS_CONFIG
-            return errorHandler(
-                res,
-                400,
-                'Ошибка валидации',
-                validation.error.issues.map(err => ({
-                    path: err.path.filter(p => !['body', 'params'].includes(p)).join('.') || 'id',
-                    message: err.message
-                }))
-            );
-        }
-
-        const { body: data } = validation.data;
         const topic = await Topic.findById(id);
 
         const update = { $set: {}, $push: {}, $pull: {} };
         let changeSummary = [];
 
-        // 3. Логика обработки файлов через S3
         if (data.filesToDelete?.length) {
             const toDelete = data.filesToDelete.filter(url => topic.files.some(f => f.url === url));
             if (toDelete.length) {
@@ -50,7 +33,6 @@ module.exports = async (req, res) => {
             changeSummary.push(`добавлено файлов: ${data.files.length}`);
         }
 
-        // 4. Текстовые поля и сброс состояния индексации
         ['name', 'content'].forEach(field => {
             if (data[field]) {
                 update.$set[field] = data[field];
@@ -59,7 +41,6 @@ module.exports = async (req, res) => {
             }
         });
 
-        // 5. Обновление метаданных
         if (data.metadata) {
             Object.keys(data.metadata).forEach(key => {
                 update.$set[`metadata.${key}`] = data.metadata[key];
@@ -74,7 +55,6 @@ module.exports = async (req, res) => {
             update.$set.status = 'review'; 
         }
 
-        // Очистка пустых операторов
         ['$set', '$push', '$pull'].forEach(op => { 
             if (!Object.keys(update[op]).length) delete update[op]; 
         });
@@ -83,14 +63,12 @@ module.exports = async (req, res) => {
             return successHandler(res, 200, 'Изменений не обнаружено', topic);
         }
 
-        // 6. Выполнение обновления в БД
         const result = await Topic.findByIdAndUpdate(id, update, { returnDocument: 'after', runValidators: true })
             .populate('metadata.category', 'name')
             .populate('metadata.accessibleByRoles', 'name')
             .populate('createdBy', 'firstName lastName photoUrl') 
             .populate('updatedBy', 'firstName lastName photoUrl')
 
-        // 7. Логирование действия (TOPIC_UPDATE)
         await logHandler({
             action: ACTIONS_CONFIG.TOPICS.actions.UPDATE.key,
             message: `Тема "${result.name || id}" обновлена. Детали: ${changeSummary.join(', ')}`,
@@ -102,7 +80,6 @@ module.exports = async (req, res) => {
         return successHandler(res, 200, 'Тема успешно обновлена', result);
 
     } catch (error) {
-        // Логируем системную ошибку (TOPIC_ERROR)
         await logHandler({
             action: ACTIONS_CONFIG.TOPICS.actions.SERVER_ERROR.key,
             message: `Ошибка сервера при обновлении темы ${id}: ${error.message}`,
