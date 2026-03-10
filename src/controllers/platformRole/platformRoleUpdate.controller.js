@@ -1,5 +1,4 @@
 const Role = require('../../models/platformRole');
-const { updateRoleSchema } = require('../../schemas/platformRole.schema');
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 const logHandler = require('../../utils/logHandler');
@@ -7,26 +6,9 @@ const { ACTIONS_CONFIG } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
     const currentUserId = req.user?.id;
+    const { params, body } = req.validatedData;
 
     try {
-        const validation = await updateRoleSchema.safeParseAsync({ 
-            params: req.params, 
-            body: req.body 
-        });
-
-        if (!validation.success) {
-            return errorHandler(
-                res, 
-                400, 
-                'Ошибка валидации при обновлении роли', 
-                validation.error.issues.map(err => ({
-                    path: err.path.join('.'),
-                    message: err.message
-                }))
-            );
-        }
-
-        const { params, body } = validation.data;
 
         const updatedRole = await Role.findByIdAndUpdate(
             params.id,
