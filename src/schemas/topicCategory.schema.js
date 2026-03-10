@@ -1,18 +1,10 @@
 const mongoose = require('mongoose');
 const { z } = require('zod');
 
-// --- Вспомогательные функции ---
-
-/**
- * Валидация ObjectId
- */
 const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID категории");
 
-/**
- * Проверка уникальности названия категории
- */
 const categoryNameIsUnique = (currentCategoryId = null) => async (name, ctx) => {
     const query = { name: name.trim() };
     if (currentCategoryId) {
@@ -29,11 +21,6 @@ const categoryNameIsUnique = (currentCategoryId = null) => async (name, ctx) => 
     }
 };
 
-// --- Схемы для контроллеров ---
-
-/**
- * Схема создания категории
- */
 const createCategorySchema = z.object({
     body: z.object({
         name: z.string("Название обязательно")
@@ -49,9 +36,6 @@ const createCategorySchema = z.object({
     })
 });
 
-/**
- * Схема обновления категории
- */
 const updateCategorySchema = z.object({
     params: z.object({
         id: objectId
@@ -72,9 +56,6 @@ const updateCategorySchema = z.object({
     }
 });
 
-/**
- * Схема удаления одной категории
- */
 const deleteCategorySchema = z.object({
     params: z.object({
         id: objectId
@@ -88,7 +69,6 @@ const deleteCategorySchema = z.object({
     }
 
     const Topic = mongoose.model('Topic');
-    // Проверка через metadata.category (как в твоем примере)
     const count = await Topic.countDocuments({ 'metadata.category': data.params.id });
 
     if (count > 0) {
@@ -100,9 +80,6 @@ const deleteCategorySchema = z.object({
     }
 });
 
-/**
- * НОВАЯ: Схема для массового удаления категорий (topicCategoriesDeleteList)
- */
 const deleteCategoryListSchema = z.object({
     body: z.object({
         ids: z.array(objectId)
@@ -111,7 +88,6 @@ const deleteCategoryListSchema = z.object({
                 const TopicCategory = mongoose.model('TopicCategory');
                 const Topic = mongoose.model('Topic');
 
-                // 1. Проверяем существование всех категорий
                 const foundCategories = await TopicCategory.find({ _id: { $in: ids } });
                 if (foundCategories.length !== ids.length) {
                     ctx.addIssue({
@@ -121,7 +97,6 @@ const deleteCategoryListSchema = z.object({
                     return;
                 }
 
-                // 2. Проверяем использование любой из них в топиках
                 const usedInTopic = await Topic.exists({ 'metadata.category': { $in: ids } });
                 if (usedInTopic) {
                     ctx.addIssue({
@@ -133,9 +108,6 @@ const deleteCategoryListSchema = z.object({
     })
 });
 
-/**
- * Схема получения списка категорий
- */
 const getAllCategoriesSchema = z.object({
     query: z.object({
         search: z.string().trim().optional(),
@@ -150,9 +122,6 @@ const getAllCategoriesSchema = z.object({
     })
 });
 
-/**
- * Схема получения одной категории
- */
 const getOneCategorySchema = z.object({
     params: z.object({
         id: objectId
@@ -163,7 +132,7 @@ module.exports = {
     createCategorySchema,
     updateCategorySchema,
     deleteCategorySchema,
-    deleteCategoryListSchema, // Не забудь добавить в экспорт
+    deleteCategoryListSchema,
     getOneCategorySchema,
     getAllCategoriesSchema
 };

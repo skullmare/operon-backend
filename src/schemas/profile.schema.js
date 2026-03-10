@@ -1,15 +1,10 @@
 const mongoose = require('mongoose');
 const { z } = require('zod');
 
-// --- Вспомогательные функции ---
-
 const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID");
 
-/**
- * Проверка уникальности логина/email с учетом исключения текущего пользователя
- */
 const fieldIsUnique = (modelName, fieldName, currentUserId = null) => async (value, ctx) => {
     const query = { [fieldName]: value.toLowerCase() };
     if (currentUserId) {
@@ -25,8 +20,6 @@ const fieldIsUnique = (modelName, fieldName, currentUserId = null) => async (val
     }
 };
 
-// --- Схема профиля ---
-
 const updateMeSchema = z.object({
     userId: objectId,
     body: z.object({
@@ -41,24 +34,20 @@ const updateMeSchema = z.object({
 }).superRefine(async (data, ctx) => {
     const { userId, body } = data;
 
-    // 1. Проверка существования пользователя и получение инстанса для контроллера
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
         ctx.addIssue({ code: 'custom', path: ['userId'], message: 'Пользователь не найден' });
         return;
     }
 
-    // 2. Проверка уникальности логина, если он передан
     if (body.login && body.login !== user.login) {
         await fieldIsUnique('User', 'login', userId)(body.login, ctx);
     }
 
-    // 3. Проверка уникальности email, если он передан
     if (body.email && body.email !== user.email) {
         await fieldIsUnique('User', 'email', userId)(body.email, ctx);
     }
 
-    // Сохраняем пользователя в объект данных, чтобы не делать findById повторно в контроллере
     data.userInstance = user;
 });
 

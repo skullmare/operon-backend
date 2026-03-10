@@ -1,4 +1,4 @@
-// config/database.js
+
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
@@ -7,7 +7,6 @@ const connectDB = async () => {
     });
     console.log(`📦 База данных ${conn.connection.name} успешно подключена (адрес сервера: ${conn.connection.host}:${conn.connection.port})`);
     
-    // Слушаем события подключения
     mongoose.connection.on('error', (err) => {
       console.error('❌ Ошибка подключения к базе данных MongoDB:', err);
     });
@@ -19,11 +18,10 @@ const connectDB = async () => {
     return conn;
   } catch (error) {
     console.error('❌ Ошибка подключения к базе данных MongoDB:', error.message);
-    process.exit(1); // Завершаем процесс при ошибке подключения
+    process.exit(1);
   }
 };
 
-// Функция для закрытия подключения (для graceful shutdown)
 const disconnectDB = async () => {
   try {
     await mongoose.connection.close();

@@ -1,21 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-// Импортируем фасад контроллеров пользователей
 const userController = require('../controllers/platformUser/index');
 
-// Middleware
 const { auth } = require('../middlewares/auth.middleware');
 const checkPermission = require('../middlewares/permission.middleware');
 const validate = require('../middlewares/validate.middleware');
 
-// Schemas
 const { getAllUsersSchema, getOneUserSchema, deleteUserSchema, createUserSchema, updateUserSchema} = require('../schemas/user.schema')
 
-/**
- * 1. Получение списка всех сотрудников
- * Права: platformUsers.read
- */
 router.get(
     '/',
     auth,
@@ -24,10 +17,6 @@ router.get(
     userController.getAllUsers
 );
 
-/**
- * 2. Получение данных конкретного сотрудника
- * Права: platformUsers.read
- */
 router.get(
     '/:id',
     auth,
@@ -36,10 +25,6 @@ router.get(
     userController.getOneUser
 );
 
-/**
- * 3. Добавление нового сотрудника
- * Права: platformUsers.create
- */
 router.post(
     '/',
     auth,
@@ -48,10 +33,6 @@ router.post(
     userController.createUser
 );
 
-/**
- * 4. Редактирование данных сотрудника
- * Права: platformUsers.update
- */
 router.patch(
     '/:id',
     auth,
@@ -60,10 +41,6 @@ router.patch(
     userController.updateUser
 );
 
-/**
- * 5. Удаление сотрудника из системы
- * Права: platformUsers.delete
- */
 router.delete(
     '/:id',
     auth,

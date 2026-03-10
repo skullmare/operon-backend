@@ -35,7 +35,6 @@ const topicSchema = new mongoose.Schema({
   vectorData: {
     isIndexed: { type: Boolean, default: false },
     lastIndexedAt: { type: Date }
-    // chunkIds не храним, чистим в Qdrant по metadata.topicId
   },
   metadata: {
     category: {
@@ -53,7 +52,7 @@ const topicSchema = new mongoose.Schema({
     },
     accessibleByRoles: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'AgentRole', // Исправлено на AgentRole
+      ref: 'AgentRole',
       required: true,
       validate: {
         validator: async function (v) {
@@ -68,7 +67,6 @@ const topicSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Индекс для поиска в админке
 topicSchema.index({ name: 'text', content: 'text' });
 
 const Topic = mongoose.model('Topic', topicSchema);

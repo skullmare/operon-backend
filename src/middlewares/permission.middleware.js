@@ -1,12 +1,10 @@
 const User = require('../models/platformUser');
-const errorHandler = require('../utils/errorHandler'); // Импорт утилиты
+const errorHandler = require('../utils/errorHandler');
 
 const checkPermission = (required) => {
     return async (req, res, next) => {
         try {
             const requiredArray = Array.isArray(required) ? required : [required];
-
-            // Senior tip: Мы уже имеем данные в req.user. Если нужно актуальное состояние из БД:
             const user = await User.findById(req.user.id).populate('role').lean();
             
             if (!user?.role?.permissions) {
@@ -34,7 +32,6 @@ const checkPermission = (required) => {
 
             next();
         } catch (error) {
-            // Обработка непредвиденных ошибок (БД, сеть и т.д.)
             return errorHandler(
                 res, 
                 500, 

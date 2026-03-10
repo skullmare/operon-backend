@@ -11,11 +11,11 @@ const agentUserSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        unique: true, // Чтобы не было дублей по номеру
-        sparse: true  // Разрешает null, но если есть значение — оно должно быть уникальным
+        unique: true,
+        sparse: true
     },
     chatId: {
-        type: String, // В Telegram это число, но лучше хранить строкой для универсальности
+        type: String,
         required: true,
         unique: true,
         index: true
@@ -24,11 +24,10 @@ const agentUserSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    // Связь с моделью AgentRole
     role: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AgentRole',
-        default: null // Пока роль не назначена, общение закрыто
+        default: null
     },
     status: {
         type: String,
@@ -43,7 +42,6 @@ const agentUserSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Виртуальное поле для полного имени (удобно для админки)
 agentUserSchema.virtual('fullName').get(function() {
     return `${this.firstName || ''} ${this.lastName || ''}`.trim();
 });

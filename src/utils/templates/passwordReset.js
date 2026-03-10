@@ -1,8 +1,3 @@
-/**
- * Шаблон письма для восстановления пароля
- * @param {String} resetUrl - Ссылка для сброса
- * @returns {String} HTML-разметка
- */
 const passwordResetTemplate = (resetUrl) => {
     return `
         <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: 0 auto; color: #333;">

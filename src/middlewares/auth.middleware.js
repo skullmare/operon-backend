@@ -1,5 +1,5 @@
 const authService = require('../services/auth.service');
-const errorHandler = require('../utils/errorHandler'); // Импортируем утилиту
+const errorHandler = require('../utils/errorHandler');
 
 const auth = (req, res, next) => {
     const header = req.headers.authorization;

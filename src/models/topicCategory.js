@@ -1,21 +1,19 @@
 const mongoose = require('mongoose');
 
 const topicCategorySchema = new mongoose.Schema({
-  // Название (например: "Техническая поддержка", "HR", "Продажи")
   name: {
     type: String,
     required: true,
     unique: true,
     trim: true
   },
-  // Краткое описание, чтобы контент-менеджер не путался
   description: {
     type: String,
     required: true,
     trim: true
   },
 }, {
-  timestamps: true // Оставляем, чтобы знать, когда категория создана
+  timestamps: true
 });
 
 const TopicCategory = mongoose.model('TopicCategory', topicCategorySchema);

@@ -1,7 +1,6 @@
 const { z } = require('zod');
 const User = require('../models/platformUser');
 
-// 1. Смена пароля
 const changePasswordSchema = z.object({
     body: z.object({
         oldPassword: z
@@ -24,7 +23,6 @@ const changePasswordSchema = z.object({
     })
 });
 
-// 2. Запрос на восстановление (Forgot Password)
 const forgotPasswordSchema = z.object({
     body: z.object({
         email: z
@@ -44,7 +42,6 @@ const forgotPasswordSchema = z.object({
     })
 });
 
-// 3. Установка нового пароля (Reset Password)
 const resetPasswordSchema = z.object({
     params: z.object({
         token: z.string().min(1, 'Токен обязателен')

@@ -1,6 +1,5 @@
 const { S3Client } = require("@aws-sdk/client-s3");
 
-// Инициализация S3 клиента для Yandex Cloud
 const s3Client = new S3Client({
     region: "ru-central1",
     endpoint: "https://storage.yandexcloud.net",

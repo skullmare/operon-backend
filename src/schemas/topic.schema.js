@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { z } = require('zod');
 
-// --- Вспомогательные функции ---
-
 const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID");
@@ -19,8 +17,6 @@ const dbAllExist = (modelName) => async (ids, ctx) => {
         ctx.addIssue({ code: 'custom', message: `Одна или несколько записей в ${modelName} не найдены` });
     }
 };
-
-// --- Подсхемы ---
 
 const categorySchema = objectId.pipe(
     z.string("Категория топика обязательна").superRefine(dbExists('TopicCategory'))
@@ -50,8 +46,6 @@ const fileSchema = z.object({
         .url("Некорректный формат ссылки"),
     fileType: z.string().optional()
 });
-
-// --- Основные схемы ---
 
 const createTopicSchema = z.object({
     body: z.object({

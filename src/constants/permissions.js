@@ -76,7 +76,6 @@ const PERMISSIONS_CONFIG = {
     },
 };
 
-// Плоский массив ключей для Mongoose: ['platformUsers.read', 'agentUsers.read', ...]
 const ALL_PERMISSIONS = Object.values(PERMISSIONS_CONFIG)
     .flatMap(group => Object.values(group.actions).map(action => action.key));
 

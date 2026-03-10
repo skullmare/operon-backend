@@ -1,4 +1,3 @@
-// validate.middleware.js
 const errorHandler = require("../utils/errorHandler");
 
 const validate = (schema, errorMessage = 'Ошибка валидации') => async (req, res, next) => {

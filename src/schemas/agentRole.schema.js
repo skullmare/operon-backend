@@ -1,19 +1,11 @@
 const mongoose = require('mongoose');
 const { z } = require('zod');
 
-// --- Вспомогательные функции ---
-
-/**
- * Валидация ObjectId
- */
 const objectId = z
     .string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID роли агента");
 
-/**
- * Проверка уникальности названия роли агента
- */
 const agentRoleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
     const query = { name: name.trim() };
     if (currentRoleId) {
@@ -30,11 +22,6 @@ const agentRoleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
     }
 };
 
-// --- Схемы для контроллеров ---
-
-/**
- * Схема создания роли агента
- */
 const createAgentRoleSchema = z.object({
     body: z.object({
         name: z.string("Название роли обязательно")
@@ -49,9 +36,6 @@ const createAgentRoleSchema = z.object({
     })
 });
 
-/**
- * Схема обновления роли агента
- */
 const updateAgentRoleSchema = z.object({
     params: z.object({
         id: objectId
@@ -69,22 +53,17 @@ const updateAgentRoleSchema = z.object({
             .optional()
     })
 }).superRefine(async (data, ctx) => {
-    // 1. Проверяем существование записи
     const role = await mongoose.model('AgentRole').findById(data.params.id);
     if (!role) {
         ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Роль для пользователей агента не найдена' });
         return;
     }
 
-    // 2. Если имя меняется, проверяем на уникальность
     if (data.body.name) {
         await agentRoleNameIsUnique(data.params.id)(data.body.name, ctx);
     }
 });
 
-/**
- * Схема удаления роли агента (с логикой из pre-deleteOne)
- */
 const deleteAgentRoleSchema = z.object({
     params: z.object({
         id: objectId
@@ -109,9 +88,6 @@ const deleteAgentRoleSchema = z.object({
     }
 });
 
-/**
- * Схемы получения данных
- */
 const getOneAgentRoleSchema = z.object({
     params: z.object({
         id: objectId

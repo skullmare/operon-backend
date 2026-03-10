@@ -5,13 +5,11 @@ const crypto = require('crypto');
 
 const BUCKET = process.env.BUCKET_NAME;
 
-// Хелпер для получения ключа из любого URL нашего бакета
 const getFileKeyFromUrl = (url) => {
     const parts = url.split(`${BUCKET}/`);
     return parts.length > 1 ? parts[1] : null;
 };
 
-// Загрузка одиночного файла (для нового API эндпоинта)
 async function uploadSingleFile(file) {
     const extension = path.extname(file.originalname).toLowerCase();
     
@@ -33,11 +31,10 @@ async function uploadSingleFile(file) {
     return {
         url: `https://storage.yandexcloud.net/${BUCKET}/${key}`,
         fileType: file.mimetype,
-        originalName: file.originalname // Сохраняем реальное имя только для БД
+        originalName: file.originalname
     };
 }
 
-// Удаление по URL (используется в Patch при удалении старых файлов)
 async function deleteSingleFileFromS3(fileUrl) {
     const key = getFileKeyFromUrl(fileUrl);
     if (!key) return;
@@ -48,10 +45,6 @@ async function deleteSingleFileFromS3(fileUrl) {
     }
 }
 
-/**
- * Массовое удаление файлов из S3 по массиву URL
- * @param {Array<string>} urls - Список полных URL файлов
- */
 async function deleteMultipleFilesFromS3(urls) {
     if (!urls || !urls.length) return;
 
@@ -66,7 +59,7 @@ async function deleteMultipleFilesFromS3(urls) {
             Bucket: BUCKET,
             Delete: {
                 Objects: keys.map(key => ({ Key: key })),
-                Quiet: true // Не возвращать детали по каждому объекту
+                Quiet: true
             }
         }));
     } catch (e) {
@@ -77,5 +70,5 @@ async function deleteMultipleFilesFromS3(urls) {
 module.exports = { 
     uploadSingleFile, 
     deleteSingleFileFromS3,
-    deleteMultipleFilesFromS3 // Экспортируем новый метод
+    deleteMultipleFilesFromS3
 };

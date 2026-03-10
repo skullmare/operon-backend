@@ -52,14 +52,13 @@ const userSchema = new mongoose.Schema({
     lastLogin: {
         type: Date
     },
-    // --- ПОЛЯ ДЛЯ ВОССТАНОВЛЕНИЯ ПАРОЛЯ ---
     resetPasswordToken: {
         type: String,
-        select: false // Скрываем из обычных запросов
+        select: false
     },
     resetPasswordExpires: {
         type: Date,
-        select: false // Скрываем из обычных запросов
+        select: false
     }
 }, {
     timestamps: true 

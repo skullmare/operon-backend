@@ -109,15 +109,9 @@ const ACTIONS_CONFIG = {
     },
 };
 
-/**
- * Вспомогательные переменные для логики приложения
- */
-
-// 1. Плоский массив всех ключей для Mongoose enum
 const ALL_ACTIONS = Object.values(ACTIONS_CONFIG)
     .flatMap(group => Object.values(group.actions).map(action => action.key));
 
-// 2. Карта Action -> Entity для автоматического определения типа сущности в logHandler
 const ACTION_TO_ENTITY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) => {
     Object.values(group.actions).forEach(act => {
         map[act.key] = group.entity;
@@ -125,7 +119,6 @@ const ACTION_TO_ENTITY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) =
     return map;
 }, {});
 
-// 3. Форматированный список для отображения фильтров в UI
 const getActionsForUI = () => {
     return Object.keys(ACTIONS_CONFIG).map(key => ({
         group: ACTIONS_CONFIG[key].label,

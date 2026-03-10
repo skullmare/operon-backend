@@ -2,15 +2,10 @@ const mongoose = require('mongoose');
 const { z } = require('zod');
 const { ALL_PERMISSIONS } = require('../constants/permissions');
 
-// --- Вспомогательные функции ---
-
 const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID");
 
-/**
- * Проверка уникальности названия роли
- */
 const roleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
     const query = { name: name.trim() };
     if (currentRoleId) {
@@ -27,11 +22,6 @@ const roleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
     }
 };
 
-// --- Схемы для контроллеров ---
-
-/**
- * Схема создания роли
- */
 const createRoleSchema = z.object({
     body: z.object({
         name: z
@@ -49,9 +39,6 @@ const createRoleSchema = z.object({
     }),
 });
 
-/**
- * Схема обновления роли
- */
 const updateRoleSchema = z.object({
     params: z.object({
         id: objectId
@@ -92,9 +79,6 @@ const updateRoleSchema = z.object({
     }
 });
 
-/**
- * Схема удаления роли (с проверками из вашего pre-hook)
- */
 const deleteRoleSchema = z.object({
     params: z.object({
         id: objectId.pipe(z.string().superRefine(async (id, ctx) => {
@@ -126,9 +110,6 @@ const deleteRoleSchema = z.object({
     })
 });
 
-/**
- * Схема для массового удаления ролей
- */
 const deleteRoleListSchema = z.object({
     body: z.object({
         ids: z.array(objectId)
@@ -166,20 +147,14 @@ const deleteRoleListSchema = z.object({
     })
 });
 
-/**
- * Схема получения списка ролей с фильтрацией и пагинацией
- */
 const getAllRolesSchema = z.object({
     query: z.object({
-        // Поиск по части названия
         search: z.string().trim().optional(),
 
-        // Фильтр: только системные или только пользовательские
         isSystem: z.enum(['true', 'false'])
             .transform(val => val === 'true')
             .optional(),
 
-        // Пагинация (преобразуем строки из URL в числа)
         page: z.string()
             .regex(/^\d+$/, "Номер страницы должен быть числом")
             .transform(Number)

@@ -1,4 +1,4 @@
-// services/email.service.js
+
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
