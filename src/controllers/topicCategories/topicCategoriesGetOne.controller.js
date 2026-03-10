@@ -4,22 +4,9 @@ const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 
 module.exports = async (req, res) => {
+    const { id } = req.validatedData.params;
+
     try {
-        const validation = await getOneCategorySchema.safeParseAsync({ params: req.params });
-
-        if (!validation.success) {
-            return errorHandler(
-                res,
-                400,
-                'Некорректный идентификатор роли',
-                validation.error.issues.map(err => ({
-                    path: err.path.join('.'),
-                    message: err.message
-                }))
-            );
-        }
-
-        const { id } = validation.data.params;
         const category = await TopicCategory.findById(id);
 
         if (!category) {

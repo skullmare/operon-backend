@@ -1,26 +1,10 @@
 const TopicCategory = require('../../models/topicCategory');
-const { getAllCategoriesSchema } = require('../../schemas/topicCategory.schema');
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 
 module.exports = async (req, res) => {
+    const { search, page, limit } = req.validatedData.query;
     try {
-        const validation = await getAllCategoriesSchema.safeParseAsync({ query: req.query });
-
-        if (!validation.success) {
-            return errorHandler(
-                res,
-                400,
-                'Некорректные параметры запроса',
-                validation.error.issues.map(err => ({
-                    path: err.path.filter(p => p !== 'query').join('.'),
-                    message: err.message
-                }))
-            );
-        }
-
-        const { search, page, limit } = validation.data.query;
-
         const filter = {};
         if (search) {
             filter.name = { $regex: search, $options: 'i' };

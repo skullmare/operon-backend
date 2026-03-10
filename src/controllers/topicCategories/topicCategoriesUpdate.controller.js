@@ -7,27 +7,9 @@ const { ACTIONS_CONFIG } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
     const currentUserId = req.user?.id;
+    const { params: { id }, body: data } = req.validatedData;
 
     try {
-        const validation = await updateCategorySchema.safeParseAsync({ 
-            params: req.params, 
-            body: req.body 
-        });
-
-        if (!validation.success) {
-            return errorHandler(
-                res,
-                400,
-                'Ошибка валидации при обновлении категории',
-                validation.error.issues.map(err => ({
-                    path: err.path.filter(p => p !== 'body' && p !== 'params').join('.'),
-                    message: err.message
-                }))
-            );
-        }
-
-        const { params: { id }, body: data } = validation.data;
-
         const updatedCategory = await TopicCategory.findByIdAndUpdate(
             id,
             { $set: data },
