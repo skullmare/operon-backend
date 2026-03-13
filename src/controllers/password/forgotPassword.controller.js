@@ -5,7 +5,7 @@ const errorHandler = require('../../utils/errorHandler');
 const logHandler = require('../../utils/logHandler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
 const passwordResetTemplate = require('../../utils/templates/passwordReset');
-const sendEmail = require("../../services/email.service");
+const sendEmail = require("../../services/email/sendEmail");
 
 module.exports = async (req, res) => {
     const { email } = req.validatedData.body;

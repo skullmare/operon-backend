@@ -2,7 +2,7 @@ const logger = require('./logger');
 
 module.exports = (res, statusCode, message, errors = []) => {
     const errorDetails = Array.isArray(errors) 
-        ? errors.map(err => (typeof err === 'object' && err !== null ? err.message : err)).filter(Boolean).join(', ')
+        ? errors.map(err => (typeof err === 'object' && err !== null ? JSON.stringify(err) : err))
         : (typeof errors === 'string' ? errors : "");
 
     logger.error(message, statusCode, errorDetails);

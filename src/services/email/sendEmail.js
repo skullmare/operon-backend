@@ -1,6 +1,6 @@
 
 const nodemailer = require('nodemailer');
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 
 const sendEmail = async (options) => {
     try {
@@ -31,4 +31,4 @@ const sendEmail = async (options) => {
     }
 };
 
-module.exports = sendEmail;
+module.exports = { sendEmail };

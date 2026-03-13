@@ -1,5 +1,5 @@
 const User = require('../../models/platformUser');
-const { deleteSingleFileFromS3 } = require('../../services/storage.service');
+const { deleteSingleFileFromS3 } = require('../../services/yandex/S3/deleteFile');
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 const logHandler = require('../../utils/logHandler');

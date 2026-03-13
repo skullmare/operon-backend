@@ -1,6 +1,6 @@
 const Topic = require('../../models/topic');
-const { deleteMultipleFilesFromS3 } = require('../../services/storage.service');
-const { deleteTopicFromQdrant } = require('../../services/vector.service');
+const { deleteMultipleFilesFromS3 } = require('../../services/yandex/S3/deleteFiles');
+const { deleteTopicFromQdrant } = require('../../services/qdrant/deleteTopicFromQdrant');
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 const logHandler = require('../../utils/logHandler');

@@ -1,4 +1,4 @@
-const { uploadSingleFile } = require('../../services/storage.service');
+const { uploadSingleFile } = require('../../services/yandex/S3/uploadFile');
 
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');

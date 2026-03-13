@@ -1,5 +1,5 @@
 const Topic = require('../../models/topic');
-const { syncTopicToQdrant } = require('../../services/vector.service');
+const { syncTopicToQdrant } = require('../../services/qdrant/syncTopicToQdrant');
 
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
