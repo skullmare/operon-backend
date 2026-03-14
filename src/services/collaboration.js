@@ -1,5 +1,5 @@
 const { Hocuspocus } = require('@hocuspocus/server');
-const { TiptapTransformer } = require('@hocuspocus/transformer');
+const { Tiptap } = require('@hocuspocus/transformer');
 const Topic = require('../models/topic');
 const { validateAccessToken } = require('../services/auth.service');
 const logger = require('../utils/logger');
@@ -9,11 +9,11 @@ function extractPlainText(blocks) {
     return blocks
         .map((block) => {
             let text = '';
-            
+
             if (Array.isArray(block.content)) {
                 text = block.content.map((c) => c.text || '').join(' ');
             }
-            
+
             if (block.props) {
                 if (block.props.url) {
                     text += ' ' + block.props.url;
@@ -33,37 +33,43 @@ function extractPlainText(blocks) {
         .replace(/\s+/g, ' ');
 }
 
-const server = new Hocuspocus({
-    port: 1234,
+const hocuspocus = new Hocuspocus();
+
+const hocuspocusConfigured = hocuspocus.configure({
     debounce: 3000,
 
-    async onAuthenticate({ token }) {
+    async onAuthenticate({ token, context }) {
         if (!token) throw new Error('Токен не предоставлен');
         const userData = validateAccessToken(token);
         if (!userData) throw new Error('Неверный или просроченный токен');
-        return { user: userData };
+        logger.success('[WS] Аутентификация пройдена успешно');
+        context.user = userData;
     },
 
     async onLoadDocument({ documentName }) {
         const topic = await Topic.findById(documentName).select('+collaborationData');
-        return topic?.collaborationData;
+        return topic?.collaborationData || null;
     },
 
-    async onStoreDocument({ documentName, state, document }) {
-        const jsonContent = TiptapTransformer.fromYDoc(document);
-        const blocks = jsonContent.default;
-        const plainText = extractPlainText(blocks);
-
+    async onStoreDocument({ documentName, state, document, context }) {
         try {
+            const tiptap = new Tiptap();
+            const jsonContent = tiptap.fromYdoc(document);
+            const blocks = jsonContent.default;
+            const plainText = extractPlainText(blocks);
+
             await Topic.findByIdAndUpdate(documentName, {
-                collaborationData: state,      // Бинарный слепок для Yjs
-                content: blocks,               // JSON для фронтенда и обычного API
-                plainTextContent: plainText,   // Текст для полнотекстового индекса
+                collaborationData: state,
+                content: blocks,
+                plainTextContent: plainText,
+                updatedBy: context.user.id,
             });
+
+            logger.success(`[WS] документ сохранён: ${documentName}`);
         } catch (error) {
             logger.error('[Collaboration-Error]', 500, error);
         }
     },
 });
 
-server.listen();
+module.exports = hocuspocusConfigured;

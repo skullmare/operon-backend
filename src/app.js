@@ -1,6 +1,10 @@
 const express = require('express');
 const cookieParser = require('cookie-parser'); 
+const expressWs = require('express-ws');
+
 const sendError = require('./utils/errorHandler');
+const logger = require('./utils/logger');
+const hocuspocusConfigured = require('./services/collaboration');
 
 const userRoutes = require('./routes/platformUsers.routes');
 const authRoutes = require('./routes/auth.routes');
@@ -14,11 +18,21 @@ const topicCategoriesRoutes = require('./routes/topicCategories.routes');
 
 
 const app = express();
+expressWs(app);
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '10kb' }));
+
+app.ws('/collaboration', (ws, req) => {
+    try {
+        hocuspocusConfigured.handleConnection(ws, req);
+    } catch (err) {
+        logger.error('[WS] ошибка handleConnection:', details = err);
+    }
+});
+
 
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/auth', authRoutes);
