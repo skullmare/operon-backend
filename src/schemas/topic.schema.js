@@ -55,12 +55,10 @@ const createTopicSchema = z.object({
             .min(1, "Наименование топика не может быть пустым")
             .max(150, "Наименование топика не может быть более 150 символов"),
         content: z
-            .string("Содержание топика обязательно")
-            .trim()
-            .min(1, "Содержание топика не может быть пустым")
-            .max(10000, "Содержание топика не может быть более 10000 символов"),
-        metadata: metadataSchema,
-        files: z.array(fileSchema).optional()
+            .array(z.any()) 
+            .optional()
+            .default([]),
+        metadata: metadataSchema
     })
 });
 
@@ -75,19 +73,9 @@ const patchTopicSchema = z.object({
             .min(1, "Наименование топика не может быть пустым")
             .max(150, "Наименование топика не может быть более 150 символов")
             .optional(),
-        content: z
-            .string()
-            .trim()
-            .min(1, "Содержание топика не может быть пустым")
-            .max(10000, "Содержание топика не может быть более 10000 символов")
-            .optional(),
         metadata: metadataSchema.partial().optional(),
-        files: z
-            .array(fileSchema)
-            .optional(),
         filesToDelete: z
             .array(z.string().url("Некорректный формат ссылки"))
-            .min(1, "Список удаляемых файлов не может быть пустым")
             .optional(),
         status: z
             .enum(['review', 'archived'], "Недопустимый статус. Доступны: review, archived")

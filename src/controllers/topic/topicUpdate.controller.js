@@ -26,18 +26,10 @@ module.exports = async (req, res) => {
             }
         }
 
-        if (data.files?.length) {
-            update.$push.files = { $each: data.files };
-            changeSummary.push(`добавлено файлов: ${data.files.length}`);
+        if (data.name) {
+            update.$set.name = data.name;
+            changeSummary.push('изменено название');
         }
-
-        ['name', 'content'].forEach(field => {
-            if (data[field]) {
-                update.$set[field] = data[field];
-                update.$set['vectorData.isIndexed'] = false;
-                changeSummary.push(`изменено поле: ${field}`);
-            }
-        });
 
         if (data.metadata) {
             Object.keys(data.metadata).forEach(key => {
@@ -45,16 +37,18 @@ module.exports = async (req, res) => {
             });
             changeSummary.push('обновлены метаданные');
         }
-        
+
         if (data.status == 'archived') {
-            deleteTopicFromQdrant(id)
-            update.$set.status = 'archived'; 
+            await deleteTopicFromQdrant(id)
+            update.$set.status = 'archived';
         } else {
-            update.$set.status = 'review'; 
+            update.$set.status = 'review';
         }
 
-        ['$set', '$push', '$pull'].forEach(op => { 
-            if (!Object.keys(update[op]).length) delete update[op]; 
+        update.$set.updatedBy = userId;
+
+        ['$set', '$push', '$pull'].forEach(op => {
+            if (!Object.keys(update[op]).length) delete update[op];
         });
 
         if (Object.keys(update).length === 0) {
@@ -64,7 +58,7 @@ module.exports = async (req, res) => {
         const result = await Topic.findByIdAndUpdate(id, update, { returnDocument: 'after', runValidators: true })
             .populate('metadata.category', 'name')
             .populate('metadata.accessibleByRoles', 'name')
-            .populate('createdBy', 'firstName lastName photoUrl') 
+            .populate('createdBy', 'firstName lastName photoUrl')
             .populate('updatedBy', 'firstName lastName photoUrl')
 
         await logHandler({

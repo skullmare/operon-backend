@@ -13,21 +13,24 @@ module.exports = async (req, res) => {
         if (category) filter['metadata.category'] = category;
         if (status) filter.status = status;
         if (search) {
-            filter.$or = [
-                { name: { $regex: search, $options: 'i' } },
-                { content: { $regex: search, $options: 'i' } }
-            ];
+            filter.$text = { $search: search };
         }
 
         const [result, total] = await Promise.all([
             Topic.find(filter)
+                .select({
+                    content: 0,
+                    plainTextContent: 0,
+                    collaborationData: 0,
+                    ...(search ? { score: { $meta: "textScore" } } : {})
+                })
                 .populate('metadata.category', 'name')
                 .populate('metadata.accessibleByRoles', 'name')
                 .populate('createdBy', 'firstName lastName photoUrl')
                 .populate('updatedBy', 'firstName lastName photoUrl')
                 .limit(limit)
                 .skip((page - 1) * limit)
-                .sort({ updatedAt: -1 })
+                .sort(search ? { score: { $meta: "textScore" } } : { updatedAt: -1 })
                 .lean(),
             Topic.countDocuments(filter)
         ]);
