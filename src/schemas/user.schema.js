@@ -12,10 +12,6 @@ const dbExists = (modelName) => async (id, ctx) => {
     if (!exists) ctx.addIssue({ code: 'custom', message: `${modelName} не найден` });
 };
 
-/**
- * Проверка уникальности логина
- * @param {String} currentUserId - (Опционально) ID текущего пользователя, чтобы игнорировать его при обновлении
- */
 const loginIsUnique = (currentUserId = null) => async (login, ctx) => {
     const query = { login: login.toLowerCase() };
     if (currentUserId) {
@@ -26,13 +22,11 @@ const loginIsUnique = (currentUserId = null) => async (login, ctx) => {
     if (exists) {
         ctx.addIssue({
             code: 'custom',
-            path: ['login'],
+            path: ['body', 'login'],
             message: 'Этот логин уже занят другим пользователем'
         });
     }
 };
-
-// --- Схемы для контроллеров ---
 
 const createUserSchema = z.object({
     body: z.object({
@@ -44,7 +38,7 @@ const createUserSchema = z.object({
             .max(30, "Логин должен быть не более 30 символов")
             .transform(val => val.toLowerCase())
             .superRefine(loginIsUnique()),
-        email: z.string("Поле email обязательно для заполнения").email("Некорректный email").transform(val => val.toLowerCase()),
+        email: z.email("Некорректный формат email"),
         password: z.string("Пароль обязателен").min(10, "Пароль должен быть не менее 10 символов").max(100, "Пароль должен быть не более 100 символов"),
         role: objectId.pipe(z.string("Роль обязательна").superRefine(dbExists('Role'))),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
@@ -60,13 +54,15 @@ const updateUserSchema = z.object({
         firstName: z.string().trim().min(1, "Поле имени не может быть пустым").max(100, "Максимальная длинна имени 100 символов").optional(),
         lastName: z.string().trim().min(1, "Поле фамилия не может быть пустым").max(100, "Максимальная длинна фамилии 100 символов").optional(),
         login: z.string().trim().min(3, "Логин должен быть не менее 3 символов").max(30, "Логин должен быть не более 30 символов").transform(val => val.toLowerCase()).optional(),
-        email: z.string().email().transform(val => val.toLowerCase()).optional(),
+        email: z.email("Некорректный формат email").optional(),
         password: z.string().min(10, "Пароль должен быть не менее 10 символов").max(100, "Пароль должен быть не более 100 символов").optional(),
-        role: objectId.pipe(z.string().superRefine(dbExists('Role'))).optional(), // Проверка, что новая роль существует
+        role: objectId.pipe(z.string().superRefine(dbExists('Role'))).optional(),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
         status: z.enum(['active', 'blocked'], "Недопустимый статус. Доступны: active, blocked").optional()
     })
 }).superRefine(async (data, ctx) => {
+    if (!mongoose.Types.ObjectId.isValid(data.params.id)) return;
+
     const user = await mongoose.model('User').findById(data.params.id).select('isSystem');
 
     if (!user) {
@@ -108,13 +104,13 @@ const deleteUserSchema = z.object({
         id: objectId.pipe(z.string().superRefine(async (id, ctx) => {
             const user = await mongoose.model('User').findById(id).select('isSystem');
             if (!user) {
-                ctx.addIssue({ code: 'custom', path: ['id'], message: 'Пользователь не найден' });
+                ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Пользователь не найден' });
                 return;
             }
             if (user.isSystem) {
                 ctx.addIssue({
                     code: 'custom',
-                    path: ['id'],
+                    path: ['params', 'id'],
                     message: 'Системного пользователя нельзя удалять'
                 });
             }

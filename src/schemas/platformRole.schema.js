@@ -44,40 +44,43 @@ const updateRoleSchema = z.object({
         id: objectId
     }),
     body: z.object({
-        name: z
-            .string()
-            .trim()
-            .min(1, "Название роли не может быть пустым")
-            .max(100, "Название роли не может быть более 100 символов")
-            .optional(),
-        permissions: z.array(z.enum(ALL_PERMISSIONS, "Одно или несколько прав доступа не существуют")).min(1, "Список прав не может быть пустым").optional(),
-        description: z
-            .string()
-            .trim()
-            .min(1, "Описание роли не может быть пустым")
-            .max(1000, "Описание роли не может быть более 1000 символов")
-            .optional()
+        name: z.string().trim().min(1).max(100).optional(),
+        permissions: z.array(z.enum(ALL_PERMISSIONS)).min(1).optional(),
+        description: z.string().trim().min(1).max(1000).optional()
     })
-}).superRefine(async (data, ctx) => {
-    const role = await mongoose.model('Role').findById(data.params.id);
+}).pipe(
+    z.object({
+        params: z.object({ id: z.string() }),
+        body: z.object({
+            name: z.string().optional(),
+            permissions: z.array(z.string()).optional(),
+            description: z.string().optional()
+        })
+    }).superRefine(async (data, ctx) => {
+        const role = await mongoose.model('Role').findById(data.params.id);
 
-    if (!role) {
-        ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Роль не найдена' });
-        return;
-    }
+        if (!role) {
+            ctx.addIssue({ 
+                code: 'custom', 
+                path: ['params', 'id'], 
+                message: 'Роль не найдена' 
+            });
+            return;
+        }
 
-    if (role.isSystem && data.body.permissions) {
-        ctx.addIssue({
-            code: 'custom',
-            path: ['body'],
-            message: 'У системной роли нельзя изменять права доступа'
-        });
-    }
+        if (role.isSystem && data.body.permissions) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['body', 'permissions'],
+                message: 'У системной роли нельзя изменять права доступа'
+            });
+        }
 
-    if (data.body.name) {
-        await roleNameIsUnique(data.params.id)(data.body.name, ctx);
-    }
-});
+        if (data.body.name) {
+            await roleNameIsUnique(data.params.id)(data.body.name, ctx);
+        }
+    })
+);
 
 const deleteRoleSchema = z.object({
     params: z.object({

@@ -25,11 +25,7 @@ const changePasswordSchema = z.object({
 
 const forgotPasswordSchema = z.object({
     body: z.object({
-        email: z
-            .string('Поле email обязателено для заполнения')
-            .trim()
-            .lowercase()
-            .email('Введите корректный email адрес')
+        email: z.email("Некорректный формат email")
     })
     .superRefine(async (data, ctx) => {
         const user = await User.findOne({ email: data.email });

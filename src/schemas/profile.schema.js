@@ -5,21 +5,6 @@ const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID");
 
-const fieldIsUnique = (modelName, fieldName, currentUserId = null) => async (value, ctx) => {
-    const query = { [fieldName]: value.toLowerCase() };
-    if (currentUserId) {
-        query._id = { $ne: currentUserId };
-    }
-
-    const exists = await mongoose.model(modelName).exists(query);
-    if (exists) {
-        ctx.addIssue({
-            code: 'custom',
-            message: `Этот ${fieldName === 'login' ? 'логин' : 'email'} уже занят`
-        });
-    }
-};
-
 const updateMeSchema = z.object({
     userId: objectId,
     body: z.object({
@@ -27,11 +12,13 @@ const updateMeSchema = z.object({
         lastName: z.string().trim().min(1, "Поле фамилия не может быть пустой").optional(),
         login: z.string().trim().min(3, "Логин должен быть не менее 3 символов")
             .transform(val => val.toLowerCase()).optional(),
-        email: z.string().email("Некорректный формат email")
+        email: z.email("Некорректный формат email")
             .transform(val => val.toLowerCase()).optional(),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
     })
 }).superRefine(async (data, ctx) => {
+    if (!mongoose.Types.ObjectId.isValid(data.userId)) return;
+
     const { userId, body } = data;
 
     const user = await mongoose.model('User').findById(userId);
@@ -41,14 +28,32 @@ const updateMeSchema = z.object({
     }
 
     if (body.login && body.login !== user.login) {
-        await fieldIsUnique('User', 'login', userId)(body.login, ctx);
+        const exists = await mongoose.model('User').exists({ 
+            login: body.login, 
+            _id: { $ne: userId } 
+        });
+        if (exists) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['body', 'login'],
+                message: 'Этот логин уже занят'
+            });
+        }
     }
 
     if (body.email && body.email !== user.email) {
-        await fieldIsUnique('User', 'email', userId)(body.email, ctx);
+        const exists = await mongoose.model('User').exists({ 
+            email: body.email, 
+            _id: { $ne: userId } 
+        });
+        if (exists) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['body', 'email'], 
+                message: 'Этот email уже занят'
+            });
+        }
     }
-
-    data.userInstance = user;
 });
 
 module.exports = {

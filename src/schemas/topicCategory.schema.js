@@ -44,6 +44,7 @@ const updateCategorySchema = z.object({
         description: z.string().trim().min(1, "Описание не может быть пустым").max(300, "Максимальная длина описания 300 символов").optional()
     })
 }).superRefine(async (data, ctx) => {
+    if (!mongoose.Types.ObjectId.isValid(data.params.id)) return;
     const category = await mongoose.model('TopicCategory').findById(data.params.id);
     if (!category) {
         ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Категория не найдена' });
@@ -60,6 +61,7 @@ const deleteCategorySchema = z.object({
         id: objectId
     })
 }).superRefine(async (data, ctx) => {
+    if (!mongoose.Types.ObjectId.isValid(data.params.id)) return;
     const category = await mongoose.model('TopicCategory').findById(data.params.id);
     
     if (!category) {
@@ -91,6 +93,7 @@ const deleteCategoryListSchema = z.object({
                 if (foundCategories.length !== ids.length) {
                     ctx.addIssue({
                         code: 'custom',
+                        path: ['ids'],
                         message: "Одна или несколько категорий не найдены"
                     });
                     return;
@@ -100,6 +103,7 @@ const deleteCategoryListSchema = z.object({
                 if (usedInTopic) {
                     ctx.addIssue({
                         code: 'custom',
+                        path: ['ids'],
                         message: "Нельзя удалить выбранные категории: одна или несколько из них используются в топиках"
                     });
                 }

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const cookieParser = require('cookie-parser'); 
 const expressWs = require('express-ws');
 
@@ -15,10 +16,21 @@ const topicRoutes = require('./routes/topics.routes');
 const fileRoutes = require('./routes/files.routes');
 const platformRoleRoutes = require('./routes/platformRoles.routes');
 const topicCategoriesRoutes = require('./routes/topicCategories.routes');
+const logsRoutes = require('./routes/logs.routes');
+const agentRoleRoutes = require('./routes/agentRoles.routes');
 
 
 const app = express();
 expressWs(app);
+
+const allowedOrigins = [
+  'http://localhost:5173'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -43,6 +55,8 @@ app.use('/api/v1/topics', topicRoutes);
 app.use('/api/v1/files', fileRoutes);
 app.use('/api/v1/platform/roles', platformRoleRoutes);
 app.use('/api/v1/topic/categories', topicCategoriesRoutes);
+app.use('/api/v1/logs', logsRoutes);
+app.use('/api/v1/agent/roles', agentRoleRoutes);
 
 app.use((req, res) => {
     sendError(res, 404, `Маршрут ${req.method} ${req.url} не найден`);

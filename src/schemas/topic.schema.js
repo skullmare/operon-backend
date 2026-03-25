@@ -32,21 +32,6 @@ const metadataSchema = z.object({
     accessibleByRoles: rolesSchema
 });
 
-const fileSchema = z.object({
-    name: z
-        .string('Наименование файла обязательно')
-        .trim()
-        .min(1, "Наименование файла не может быть пустым"),
-    description: z
-        .string('Описание файла обязательно')
-        .trim()
-        .min(1, "Описание файла не может быть пустым"),
-    url: z
-        .string('Поле ссылка обязательно')
-        .url("Некорректный формат ссылки"),
-    fileType: z.string().optional()
-});
-
 const createTopicSchema = z.object({
     body: z.object({
         name: z

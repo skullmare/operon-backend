@@ -2,39 +2,33 @@ const AgentRole = require('../../models/agentRole');
 const successHandler = require('../../utils/successHandler');
 const errorHandler = require('../../utils/errorHandler');
 
-
 module.exports = async (req, res) => {
     const { id } = req.validatedData.params;
-    const updateData = req.validatedData.body;
 
     try {
-        const updatedRole = await AgentRole.findByIdAndUpdate(
-            id,
-            { $set: updateData },
-            { new: true, runValidators: true }
-        ).lean();
+        const role = await AgentRole.findById(id).lean();
 
-        if (!updatedRole) {
+        if (!role) {
             return errorHandler(
                 res,
                 404,
                 'Роль агента не найдена',
-                [{ path: 'id', message: `Не удалось обновить роль с ID ${id}` }]
+                [{ path: 'id', message: `Роль с ID ${id} не существует` }]
             );
         }
 
         return successHandler(
             res,
             200,
-            `Роль "${updatedRole.name}" успешно обновлена`,
-            updatedRole
+            'Данные роли агента успешно получены',
+            role
         );
 
     } catch (error) {
         return errorHandler(
             res,
             500,
-            'Ошибка сервера при обновлении роли агента',
+            'Ошибка сервера при получении роли агента',
             [{ path: 'server', message: error.message }]
         );
     }
