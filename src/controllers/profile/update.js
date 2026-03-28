@@ -1,4 +1,4 @@
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const { deleteSingleFileFromS3 } = require('../../services/yandex/S3/delete');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
             return successHandler(res, 200, 'Изменений не обнаружено', user);
         }
 
-        const updatedUser = await User.findByIdAndUpdate(
+        const updatedPlatformUser = await PlatformUser.findByIdAndUpdate(
             userId,
             { $set: update },
             { returnDocument: 'after', runValidators: true }
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
             status: 'success'
         });
 
-        return successHandler(res, 200, 'Профиль успешно обновлен', updatedUser);
+        return successHandler(res, 200, 'Профиль успешно обновлен', updatedPlatformUser);
 
     } catch (error) {
         await logHandler({

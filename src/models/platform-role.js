@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { ALL_PERMISSIONS } = require('../constants/permissions');
 
-const roleSchema = new mongoose.Schema({
+const platformRoleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -31,5 +31,5 @@ const roleSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Role = mongoose.model('Role', roleSchema);
-module.exports = Role;
+const PlatformRole = mongoose.model('PlatformRole', platformRoleSchema);
+module.exports = PlatformRole;

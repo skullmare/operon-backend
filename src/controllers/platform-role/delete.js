@@ -1,4 +1,4 @@
-const Role = require('../../models/platform-role');
+const PlatformRole = require('../../models/platform-role');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 const logHandler = require('../../utils/log-handler');
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     const { id } = req.validatedData.params;
 
     try {
-        const role = await Role.findByIdAndDelete(id);
+        const role = await PlatformRole.findByIdAndDelete(id);
 
         await logHandler({
             action: ACTIONS_CONFIG.PLATFORM_ROLES.actions.DELETE.key,

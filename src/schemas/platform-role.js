@@ -6,13 +6,13 @@ const objectId = z.string()
     .trim()
     .refine(v => mongoose.Types.ObjectId.isValid(v), "Некорректный ID");
 
-const roleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
+const roleNameIsUnique = (currentPlatformRoleId = null) => async (name, ctx) => {
     const query = { name: name.trim() };
-    if (currentRoleId) {
-        query._id = { $ne: currentRoleId };
+    if (currentPlatformRoleId) {
+        query._id = { $ne: currentPlatformRoleId };
     }
 
-    const exists = await mongoose.model('Role').exists(query);
+    const exists = await mongoose.model('PlatformRole').exists(query);
     if (exists) {
         ctx.addIssue({
             code: 'custom',
@@ -22,7 +22,7 @@ const roleNameIsUnique = (currentRoleId = null) => async (name, ctx) => {
     }
 };
 
-const createRoleSchema = z.object({
+const createPlatformRoleSchema = z.object({
     body: z.object({
         name: z
             .string("Название роли обязательно для заполнения")
@@ -39,7 +39,7 @@ const createRoleSchema = z.object({
     }),
 });
 
-const updateRoleSchema = z.object({
+const updatePlatformRoleSchema = z.object({
     params: z.object({
         id: objectId
     }),
@@ -57,7 +57,7 @@ const updateRoleSchema = z.object({
             description: z.string().optional()
         })
     }).superRefine(async (data, ctx) => {
-        const role = await mongoose.model('Role').findById(data.params.id);
+        const role = await mongoose.model('PlatformRole').findById(data.params.id);
 
         if (!role) {
             ctx.addIssue({ 
@@ -82,10 +82,10 @@ const updateRoleSchema = z.object({
     })
 );
 
-const deleteRoleSchema = z.object({
+const deletePlatformRoleSchema = z.object({
     params: z.object({
         id: objectId.pipe(z.string().superRefine(async (id, ctx) => {
-            const role = await mongoose.model('Role').findById(id);
+            const role = await mongoose.model('PlatformRole').findById(id);
 
             if (!role) {
                 ctx.addIssue({ code: 'custom', message: 'Роль не найдена' });
@@ -100,7 +100,7 @@ const deleteRoleSchema = z.object({
                 return;
             }
 
-            const PlatformUser = mongoose.model('User');
+            const PlatformUser = mongoose.model('PlatformUser');
             const isAssigned = await PlatformUser.exists({ role: id });
 
             if (isAssigned) {
@@ -113,15 +113,15 @@ const deleteRoleSchema = z.object({
     })
 });
 
-const deleteRoleListSchema = z.object({
+const deletePlatformRoleListSchema = z.object({
     body: z.object({
         ids: z.array(objectId)
             .min(1, "Список ролей не может быть пустым")
             .pipe(z.array(z.string()).superRefine(async (ids, ctx) => {
-                const Role = mongoose.model('Role');
-                const PlatformUser = mongoose.model('User');
+                const PlatformRole = mongoose.model('PlatformRole');
+                const PlatformUser = mongoose.model('PlatformUser');
 
-                const roles = await Role.find({ _id: { $in: ids } });
+                const roles = await PlatformRole.find({ _id: { $in: ids } });
 
                 if (roles.length !== ids.length) {
                     ctx.addIssue({
@@ -130,17 +130,17 @@ const deleteRoleListSchema = z.object({
                     });
                 }
 
-                const systemRoles = roles.filter(r => r.isSystem);
-                if (systemRoles.length > 0) {
-                    const names = systemRoles.map(r => r.name).join(', ');
+                const systemPlatformRoles = roles.filter(r => r.isSystem);
+                if (systemPlatformRoles.length > 0) {
+                    const names = systemPlatformRoles.map(r => r.name).join(', ');
                     ctx.addIssue({
                         code: 'custom',
                         message: `Нельзя удалить системные роли: ${names}`
                     });
                 }
 
-                const usersWithRoles = await PlatformUser.exists({ role: { $in: ids } });
-                if (usersWithRoles) {
+                const usersWithPlatformRoles = await PlatformUser.exists({ role: { $in: ids } });
+                if (usersWithPlatformRoles) {
                     ctx.addIssue({
                         code: 'custom',
                         message: "Одна или несколько ролей из списка назначены пользователям"
@@ -150,7 +150,7 @@ const deleteRoleListSchema = z.object({
     })
 });
 
-const getAllRolesSchema = z.object({
+const getAllPlatformRolesSchema = z.object({
     query: z.object({
         search: z.string().trim().optional(),
 
@@ -170,17 +170,17 @@ const getAllRolesSchema = z.object({
     })
 });
 
-const getOneRoleSchema = z.object({
+const getOnePlatformRoleSchema = z.object({
     params: z.object({
         id: objectId
     })
 });
 
 module.exports = {
-    createRoleSchema,
-    updateRoleSchema,
-    deleteRoleSchema,
-    getOneRoleSchema,
-    getAllRolesSchema,
-    deleteRoleListSchema
+    createPlatformRoleSchema,
+    updatePlatformRoleSchema,
+    deletePlatformRoleSchema,
+    getOnePlatformRoleSchema,
+    getAllPlatformRolesSchema,
+    deletePlatformRoleListSchema
 };

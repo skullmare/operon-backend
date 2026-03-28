@@ -1,4 +1,4 @@
-const Role = require('../../models/platform-role');
+const PlatformRole = require('../../models/platform-role');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 
@@ -17,8 +17,8 @@ module.exports = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const [roles, total] = await Promise.all([
-            Role.find(filter).sort({ name: 1 }).skip(skip).limit(limit),
-            Role.countDocuments(filter)
+            PlatformRole.find(filter).sort({ name: 1 }).skip(skip).limit(limit),
+            PlatformRole.countDocuments(filter)
         ]);
 
         return successHandler(res, 200, 'Список ролей получен', {

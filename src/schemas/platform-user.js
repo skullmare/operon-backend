@@ -18,7 +18,7 @@ const loginIsUnique = (currentUserId = null) => async (login, ctx) => {
         query._id = { $ne: currentUserId };
     }
 
-    const exists = await mongoose.model('User').exists(query);
+    const exists = await mongoose.model('PlatformUser').exists(query);
     if (exists) {
         ctx.addIssue({
             code: 'custom',
@@ -40,7 +40,7 @@ const createUserSchema = z.object({
             .superRefine(loginIsUnique()),
         email: z.email("Некорректный формат email"),
         password: z.string("Пароль обязателен").min(10, "Пароль должен быть не менее 10 символов").max(100, "Пароль должен быть не более 100 символов"),
-        role: objectId.pipe(z.string("Роль обязательна").superRefine(dbExists('Role'))),
+        role: objectId.pipe(z.string("Роль обязательна").superRefine(dbExists('PlatformRole'))),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
         status: z.enum(['active', 'blocked'], "Недопустимый статус. Доступны: active, blocked").default('active')
     })
@@ -56,14 +56,14 @@ const updateUserSchema = z.object({
         login: z.string().trim().min(3, "Логин должен быть не менее 3 символов").max(30, "Логин должен быть не более 30 символов").transform(val => val.toLowerCase()).optional(),
         email: z.email("Некорректный формат email").optional(),
         password: z.string().min(10, "Пароль должен быть не менее 10 символов").max(100, "Пароль должен быть не более 100 символов").optional(),
-        role: objectId.pipe(z.string().superRefine(dbExists('Role'))).optional(),
+        role: objectId.pipe(z.string().superRefine(dbExists('PlatformRole'))).optional(),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
         status: z.enum(['active', 'blocked'], "Недопустимый статус. Доступны: active, blocked").optional()
     })
 }).superRefine(async (data, ctx) => {
     if (!mongoose.Types.ObjectId.isValid(data.params.id)) return;
 
-    const user = await mongoose.model('User').findById(data.params.id).select('isSystem');
+    const user = await mongoose.model('PlatformUser').findById(data.params.id).select('isSystem');
 
     if (!user) {
         ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Пользователь не найден' });
@@ -95,14 +95,14 @@ const getAllUsersSchema = z.object({
 
 const getOneUserSchema = z.object({
     params: z.object({
-        id: objectId.pipe(z.string().superRefine(dbExists('User')))
+        id: objectId.pipe(z.string().superRefine(dbExists('PlatformUser')))
     })
 });
 
 const deleteUserSchema = z.object({
     params: z.object({
         id: objectId.pipe(z.string().superRefine(async (id, ctx) => {
-            const user = await mongoose.model('User').findById(id).select('isSystem');
+            const user = await mongoose.model('PlatformUser').findById(id).select('isSystem');
             if (!user) {
                 ctx.addIssue({ code: 'custom', path: ['params', 'id'], message: 'Пользователь не найден' });
                 return;

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const app = require('./src/app');
 const { connectDB, disconnectDB } = require('./config/mongo');
-const { seedRoles } = require('./src/init/platform-role');
+const { seedPlatformRoles } = require('./src/init/platform-role');
 const { seedAgentRoles } = require('./src/init/agent-role');
 const { seedSuperAdmin } = require('./src/init/super-admin');
 const { seedSystemSettings } = require('./src/init/system-settings');
@@ -15,7 +15,7 @@ let server;
 const startServer = async () => {
   try {
     await connectDB();
-    await seedRoles();
+    await seedPlatformRoles();
     await seedAgentRoles();
     await seedSystemSettings();
     await seedTopicCategories();

@@ -1,6 +1,6 @@
 require('dotenv').config();
-const User = require('../models/platform-user');
-const Role = require('../models/platform-role');
+const PlatformUser = require('../models/platform-user');
+const PlatformRole = require('../models/platform-role');
 const { hashPassword } = require('../utils/password-handler');
 const logger = require('../utils/logger');
 
@@ -9,14 +9,14 @@ const password = process.env.PASSWORD_SUPER_ADMIN;
 
 const seedSuperAdmin = async () => {
     try {
-        const adminRole = await Role.findOne({ name: 'Системный администратор' });
+        const adminPlatformRole = await PlatformRole.findOne({ name: 'Системный администратор' });
 
-        if (!adminRole) {
-            logger.error('Ошибка: Роль "Системный администратор" не найдена. Сначала запустите seedRoles!');
+        if (!adminPlatformRole) {
+            logger.error('Ошибка: Роль "Системный администратор" не найдена. Сначала запустите seedPlatformRoles!');
             return;
         }
 
-        const adminExists = await User.findOne({ login: login });
+        const adminExists = await PlatformUser.findOne({ login: login });
 
         if (adminExists) {
             logger.success('Аккаунт системного администратора уже существует, пропуск создания');
@@ -25,13 +25,13 @@ const seedSuperAdmin = async () => {
 
         const hashedPassword = await hashPassword(password);
 
-        const superAdmin = new User({
+        const superAdmin = new PlatformUser({
             firstName: 'System',
             lastName: 'Administrator',
             login: login,
-            email: '',
+            email: 'admin@admin.ru',
             password: hashedPassword,
-            role: adminRole._id,
+            role: adminPlatformRole._id,
             status: 'active',
             isSystem: true
         });

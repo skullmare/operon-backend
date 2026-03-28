@@ -21,14 +21,14 @@ const updateMeSchema = z.object({
 
     const { userId, body } = data;
 
-    const user = await mongoose.model('User').findById(userId);
+    const user = await mongoose.model('PlatformUser').findById(userId);
     if (!user) {
         ctx.addIssue({ code: 'custom', path: ['userId'], message: 'Пользователь не найден' });
         return;
     }
 
     if (body.login && body.login !== user.login) {
-        const exists = await mongoose.model('User').exists({ 
+        const exists = await mongoose.model('PlatformUser').exists({ 
             login: body.login, 
             _id: { $ne: userId } 
         });
@@ -42,7 +42,7 @@ const updateMeSchema = z.object({
     }
 
     if (body.email && body.email !== user.email) {
-        const exists = await mongoose.model('User').exists({ 
+        const exists = await mongoose.model('PlatformUser').exists({ 
             email: body.email, 
             _id: { $ne: userId } 
         });

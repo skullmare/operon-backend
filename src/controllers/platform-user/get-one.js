@@ -1,4 +1,4 @@
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 
@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     const { id } = req.validatedData.params;
 
     try {
-        const user = await User.findById(id)
+        const user = await PlatformUser.findById(id)
             .populate('role', 'name permissions')
             .lean();
 

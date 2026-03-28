@@ -28,12 +28,12 @@ const topicSchema = new mongoose.Schema({
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'PlatformUser',
     required: true
   },
   updatedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'PlatformUser'
   },
   vectorData: {
     isIndexed: { type: Boolean, default: false },

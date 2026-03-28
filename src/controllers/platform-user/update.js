@@ -1,4 +1,4 @@
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const { hashPassword } = require('../../utils/password-handler');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -6,7 +6,7 @@ const logHandler = require('../../utils/log-handler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
-    const currentUserId = req.user?.id;
+    const currentPlatformUserId = req.user?.id;
 
     const { id } = req.validatedData.params;
     const data = req.validatedData.body;
@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
             data.password = await hashPassword(data.password);
         }
 
-        const updatedUser = await User.findByIdAndUpdate(
+        const updatedPlatformUser = await PlatformUser.findByIdAndUpdate(
             id,
             { $set: data },
             { returnDocument: 'after' }
@@ -24,13 +24,13 @@ module.exports = async (req, res) => {
 
         await logHandler({
             action: ACTIONS_CONFIG.PLATFORM_USERS.actions.UPDATE.key,
-            message: `Обновлены данные сотрудника: ${updatedUser.login}`,
-            userId: currentUserId,
-            entityId: updatedUser._id,
+            message: `Обновлены данные сотрудника: ${updatedPlatformUser.login}`,
+            userId: currentPlatformUserId,
+            entityId: updatedPlatformUser._id,
             status: 'success'
         });
 
-        const responseData = updatedUser.toObject();
+        const responseData = updatedPlatformUser.toObject();
         delete responseData.password;
 
         return successHandler(res, 200, 'Данные сотрудника успешно обновлены', responseData);
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         await logHandler({
             action: ACTIONS_CONFIG.PLATFORM_USERS.actions.SERVER_ERROR.key,
             message: `Ошибка при обновлении сотрудника (ID: ${id}): ${error.message}`,
-            userId: currentUserId,
+            userId: currentPlatformUserId,
             status: 'error'
         });
 

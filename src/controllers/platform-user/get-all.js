@@ -1,4 +1,4 @@
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -25,13 +25,13 @@ module.exports = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const [users, total] = await Promise.all([
-            User.find(filter)
+            PlatformUser.find(filter)
                 .populate('role', 'name')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
                 .lean(),
-            User.countDocuments(filter)
+            PlatformUser.countDocuments(filter)
         ]);
 
         const pagination = {

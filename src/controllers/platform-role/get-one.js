@@ -1,4 +1,4 @@
-const Role = require('../../models/platform-role');
+const PlatformRole = require('../../models/platform-role');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 
@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
 
     try {
 
-        const role = await Role.findById(id);
+        const role = await PlatformRole.findById(id);
 
         if (!role) {
             return errorHandler(

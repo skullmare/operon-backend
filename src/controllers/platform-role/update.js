@@ -1,4 +1,4 @@
-const Role = require('../../models/platform-role');
+const PlatformRole = require('../../models/platform-role');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 const logHandler = require('../../utils/log-handler');
@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
 
     try {
 
-        const updatedRole = await Role.findByIdAndUpdate(
+        const updatedPlatformRole = await PlatformRole.findByIdAndUpdate(
             params.id,
             { $set: body },
             { returnDocument: 'after' }
@@ -18,13 +18,13 @@ module.exports = async (req, res) => {
 
         await logHandler({
             action: ACTIONS_CONFIG.PLATFORM_ROLES.actions.UPDATE.key,
-            message: `Обновлена роль: ${updatedRole.name}`,
+            message: `Обновлена роль: ${updatedPlatformRole.name}`,
             userId: currentUserId,
-            entityId: updatedRole._id,
+            entityId: updatedPlatformRole._id,
             status: 'success'
         });
 
-        return successHandler(res, 200, 'Роль успешно обновлена', updatedRole);
+        return successHandler(res, 200, 'Роль успешно обновлена', updatedPlatformRole);
 
     } catch (error) {
         return errorHandler(res, 500, 'Ошибка сервера при обновлении роли', [{ path: 'server', message: error.message }]);

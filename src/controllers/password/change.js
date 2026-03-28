@@ -1,4 +1,4 @@
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const { comparePassword, hashPassword } = require('../../utils/password-handler');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
     const { oldPassword, newPassword } = req.validatedData.body;
 
     try {
-        const user = await User.findById(userId).select('+password');
+        const user = await PlatformUser.findById(userId).select('+password');
         if (!user) {
             return errorHandler(res, 404, 'Пользователь не найден');
         }
@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
         const hashedNewPassword = await hashPassword(newPassword);
         
-        await User.findByIdAndUpdate(userId, { 
+        await PlatformUser.findByIdAndUpdate(userId, { 
             $set: { password: hashedNewPassword } 
         });
 

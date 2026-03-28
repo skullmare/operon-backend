@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const { hashPassword } = require('../../utils/password-handler');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     try {
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-        const user = await User.findOne({
+        const user = await PlatformUser.findOne({
             resetPasswordToken: hashedToken,
             resetPasswordExpires: { $gt: Date.now() }
         }).select('+resetPasswordToken +resetPasswordExpires');

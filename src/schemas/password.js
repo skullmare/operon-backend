@@ -1,5 +1,5 @@
 const { z } = require('zod');
-const User = require('../models/platform-user');
+const PlatformUser = require('../models/platform-user');
 
 const changePasswordSchema = z.object({
     body: z.object({
@@ -28,7 +28,7 @@ const forgotPasswordSchema = z.object({
         email: z.email("Некорректный формат email")
     })
     .superRefine(async (data, ctx) => {
-        const user = await User.findOne({ email: data.email });
+        const user = await PlatformUser.findOne({ email: data.email });
         if (!user) {
             ctx.addIssue({
                 message: "Пользователь с таким email не найден",

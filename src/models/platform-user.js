@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const platformUserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role'
+        ref: 'PlatformRole'
     },
     status: {
         type: String,
@@ -64,5 +64,5 @@ const userSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const PlatformUser = mongoose.model('PlatformUser', platformUserSchema);
+module.exports = PlatformUser;

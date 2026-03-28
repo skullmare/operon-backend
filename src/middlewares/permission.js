@@ -1,11 +1,11 @@
-const User = require('../models/platform-user');
+const PlatformUser = require('../models/platform-user');
 const errorHandler = require('../utils/error-handler');
 
 const checkPermission = (required) => {
     return async (req, res, next) => {
         try {
             const requiredArray = Array.isArray(required) ? required : [required];
-            const user = await User.findById(req.user.id).populate('role').lean();
+            const user = await PlatformUser.findById(req.user.id).populate('role').lean();
             
             if (!user?.role?.permissions) {
                 return errorHandler(

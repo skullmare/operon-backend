@@ -16,7 +16,7 @@ const logSchema = new mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'PlatformUser',
         required: false,
         index: true
     },

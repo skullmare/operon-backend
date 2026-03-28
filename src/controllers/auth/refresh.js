@@ -3,7 +3,7 @@ const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 const logHandler = require('../../utils/log-handler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const logger = require('../../utils/logger');
 
 module.exports = async (req, res) => {
@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        await User.findByIdAndUpdate(decoded.id, {
+        await PlatformUser.findByIdAndUpdate(decoded.id, {
             lastLogin: new Date()
         });
     } catch (error) {

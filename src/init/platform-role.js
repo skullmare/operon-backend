@@ -1,10 +1,10 @@
-const Role = require('../models/platform-role'); 
+const PlatformRole = require('../models/platform-role'); 
 const { ALL_PERMISSIONS } = require('../constants/permissions');
 const logger = require('../utils/logger');
 
-const seedRoles = async () => {
+const seedPlatformRoles = async () => {
     try {
-        await Role.findOneAndUpdate(
+        await PlatformRole.findOneAndUpdate(
             { name: 'Системный администратор' },
             {
                 name: 'Системный администратор',
@@ -25,4 +25,4 @@ const seedRoles = async () => {
     }
 };
 
-module.exports = { seedRoles };
+module.exports = { seedPlatformRoles };

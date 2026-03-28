@@ -1,5 +1,5 @@
 const authService = require('../../services/auth');
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const { comparePassword } = require('../../utils/password-handler');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
@@ -10,7 +10,7 @@ const logger = require('../../utils/logger');
 module.exports = async (req, res) => {
     try {
         const { login: userLogin, password } = req.body;
-        const user = await User.findOne({ login: userLogin }).select('+password');
+        const user = await PlatformUser.findOne({ login: userLogin }).select('+password');
 
         if (!user || !(await comparePassword(password, user.password))) {
             await logHandler({
@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
         }
 
         try {
-            await User.findByIdAndUpdate(user._id, {
+            await PlatformUser.findByIdAndUpdate(user._id, {
                 lastLogin: new Date()
             });
         } catch (error) {

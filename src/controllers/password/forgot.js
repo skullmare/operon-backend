@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const User = require('../../models/platform-user');
+const PlatformUser = require('../../models/platform-user');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 const logHandler = require('../../utils/log-handler');
@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     const { email } = req.validatedData.body;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await PlatformUser.findOne({ email });
 
         const resetToken = crypto.randomBytes(32).toString('hex');
 
