@@ -14,7 +14,7 @@ const updateMeSchema = z.object({
             .transform(val => val.toLowerCase()).optional(),
         email: z.email("Некорректный формат email")
             .transform(val => val.toLowerCase()).optional(),
-        photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
+        photoUrl: z.url("Некорректная ссылка на фото").optional().or(z.literal('')),
     })
 }).superRefine(async (data, ctx) => {
     if (!mongoose.Types.ObjectId.isValid(data.userId)) return;
@@ -54,7 +54,11 @@ const updateMeSchema = z.object({
             });
         }
     }
-});
+    data.userInstance = user;
+}).transform((data) => ({
+    body: data.body,
+    userInstance: data.userInstance
+}));
 
 module.exports = {
     updateMeSchema

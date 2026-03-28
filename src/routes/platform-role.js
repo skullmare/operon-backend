@@ -7,13 +7,13 @@ const { auth } = require('../middlewares/auth');
 const checkPermission = require('../middlewares/permission');
 const validate = require('../middlewares/validate');
 
-const { getAllRolesSchema, getOneRoleSchema, deleteRoleListSchema, deleteRoleSchema, updateRoleSchema, createRoleSchema} = require('../schemas/platform-role')
+const { getAllPlatformRolesSchema, getOnePlatformRoleSchema, deletePlatformRoleListSchema, deletePlatformRoleSchema, updatePlatformRoleSchema, createPlatformRoleSchema } = require('../schemas/platform-role')
 
 router.get(
     '/',
     auth,
     checkPermission('role.read'),
-    validate(getAllRolesSchema),
+    validate(getAllPlatformRolesSchema),
     roleController.getAllRoles
 );
 
@@ -21,7 +21,7 @@ router.get(
     '/:id',
     auth,
     checkPermission('role.read'),
-    validate(getOneRoleSchema),
+    validate(getOnePlatformRoleSchema),
     roleController.getOneRole
 );
 
@@ -29,7 +29,7 @@ router.post(
     '/',
     auth,
     checkPermission('role.create'),
-    validate(createRoleSchema),
+    validate(createPlatformRoleSchema),
     roleController.createRole
 );
 
@@ -37,7 +37,7 @@ router.patch(
     '/:id',
     auth,
     checkPermission('role.update'),
-    validate(updateRoleSchema),
+    validate(updatePlatformRoleSchema),
     roleController.updateRole
 );
 
@@ -45,7 +45,7 @@ router.delete(
     '/delete/many',
     auth,
     checkPermission('role.delete'),
-    validate(deleteRoleListSchema),
+    validate(deletePlatformRoleListSchema),
     roleController.deleteRoleList
 );
 
@@ -53,7 +53,7 @@ router.delete(
     '/:id',
     auth,
     checkPermission('role.delete'),
-    validate(deleteRoleSchema),
+    validate(deletePlatformRoleSchema),
     roleController.deleteRole
 );
 

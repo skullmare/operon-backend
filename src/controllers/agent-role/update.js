@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
         const updatedRole = await AgentRole.findByIdAndUpdate(
             id,
             { $set: updateData },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).lean();
 
         if (!updatedRole) {
