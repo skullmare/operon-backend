@@ -40,7 +40,7 @@ const seedSuperAdmin = async () => {
         logger.success(`Инициализация аккаунта системного администратора успешно завершена (Логин: ${login} / Пароль: ${password})`);
 
     } catch (error) {
-        logger.error('Ошибка при инициализации аккаунта системного администратора', details = error.message);
+        logger.error('Ошибка при инициализации аккаунта системного администратора', null, error.message);
     }
 };
 

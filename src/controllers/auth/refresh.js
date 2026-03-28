@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
             lastLogin: new Date()
         });
     } catch (error) {
-        logger.error('Ошибка при обновлении lastLogin', details = error.message);
+        logger.error('Ошибка при обновлении lastLogin', null, error.message);
     }
 
     const { accessToken, refreshToken } = authService.generateTokens({

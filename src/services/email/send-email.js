@@ -27,7 +27,7 @@ const sendEmail = async (options) => {
         return info;
     } catch (error) {
         logger.error(`[Email-Error]: ${error.message}`);
-        throw new Error('Ошибка при отправке почты');
+        throw new Error('Ошибка при отправке почты', { cause: error });
     }
 };
 

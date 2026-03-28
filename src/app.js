@@ -40,8 +40,8 @@ app.use(express.json({ limit: '10kb' }));
 app.ws('/collaboration', (ws, req) => {
     try {
         hocuspocusConfigured.handleConnection(ws, req);
-    } catch (err) {
-        logger.error('[WS] ошибка handleConnection:', details = err);
+    } catch (error) {
+        logger.error('[WS] ошибка handleConnection:', null, error.message);
     }
 });
 
@@ -62,7 +62,7 @@ app.use((req, res) => {
     sendError(res, 404, `Маршрут ${req.method} ${req.url} не найден`);
 });
 
-app.use((err, req, res, next) => {    
+app.use((err, res) => {    
     const status = err.status || 500;
     const message = err.message || 'Внутренняя ошибка сервера';
     const errors = err.errors || []; 

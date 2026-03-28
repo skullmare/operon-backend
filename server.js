@@ -25,7 +25,7 @@ const startServer = async () => {
       logger.success(`Сервер запущен на порту ${PORT} | http://localhost:${PORT}`);
     });
   } catch (error) {
-    logger.error('Ошибка при запуске', details = error.message || error);
+    logger.error('Ошибка при запуске', null, error.message || error);
     process.exit(1);
   }
 };

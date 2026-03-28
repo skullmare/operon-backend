@@ -40,7 +40,7 @@ const seedTopicCategories = async () => {
 
         logger.success('Инициализация категорий знаний успешно завершена');
     } catch (error) {
-        logger.error('Ошибка при сидировании категорий знаний', details = error.message || error);
+        logger.error('Ошибка при сидировании категорий знаний', null, error.message || error);
         throw error;
     }
 };

@@ -21,7 +21,7 @@ const seedPlatformRoles = async () => {
         
         logger.success('Инициализация системных ролей для управления платформой успешно завершена');
     } catch (error) {
-        logger.error('Ошибка при инициализации системных ролей для управления платформой', details = error.message);
+        logger.error('Ошибка при инициализации системных ролей для управления платформой', null, error.message);
     }
 };
 

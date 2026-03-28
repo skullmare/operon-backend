@@ -15,7 +15,7 @@ class AuthService {
     validateAccessToken(token) {
         try {
             return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -23,7 +23,7 @@ class AuthService {
     validateRefreshToken(token) {
         try {
             return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-        } catch (e) {
+        } catch {
             return null;
         }
     }

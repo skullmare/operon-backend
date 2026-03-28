@@ -32,7 +32,7 @@ const seedSystemSettings = async () => {
 
         logger.success('Инициализация системных настроек успешно завершена');
     } catch (error) {
-        logger.error('Ошибка при сидировании настроек', details = error.message || error);
+        logger.error('Ошибка при сидировании настроек', null, error.message || error);
         throw error;
     }
 };

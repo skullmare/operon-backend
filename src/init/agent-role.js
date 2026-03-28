@@ -20,7 +20,7 @@ const seedAgentRoles = async () => {
         }
         logger.success('Инициализация базовых ролей для доступа к ИИ агенту успешно завершена');
     } catch (error) {
-        logger.error('Ошибка при инициализации базовых ролей для доступа к ИИ агенту', details = error.message || error);
+        logger.error('Ошибка при инициализации базовых ролей для доступа к ИИ агенту', null, error.message || error);
     }
 };
 
