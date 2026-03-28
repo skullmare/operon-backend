@@ -1,7 +1,7 @@
 const { Hocuspocus } = require('@hocuspocus/server');
 const { Tiptap } = require('@hocuspocus/transformer');
 const Topic = require('../models/topic');
-const { validateAccessToken } = require('../services/auth.service');
+const { validateAccessToken } = require('./auth');
 const logger = require('../utils/logger');
 
 function extractPlainText(blocks) {

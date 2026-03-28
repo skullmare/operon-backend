@@ -3,21 +3,21 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser'); 
 const expressWs = require('express-ws');
 
-const sendError = require('./utils/errorHandler');
+const sendError = require('./utils/error-handler');
 const logger = require('./utils/logger');
 const hocuspocusConfigured = require('./services/collaboration');
 
-const userRoutes = require('./routes/platformUsers.routes');
-const authRoutes = require('./routes/auth.routes');
-const profileRoutes = require('./routes/profile.routes');
-const passwordRoutes = require('./routes/password.routes');
-const healthRoutes = require('./routes/health.routes');
-const topicRoutes = require('./routes/topics.routes');
-const fileRoutes = require('./routes/files.routes');
-const platformRoleRoutes = require('./routes/platformRoles.routes');
-const topicCategoriesRoutes = require('./routes/topicCategories.routes');
-const logsRoutes = require('./routes/logs.routes');
-const agentRoleRoutes = require('./routes/agentRoles.routes');
+const userRoutes = require('./routes/platform-user');
+const authRoutes = require('./routes/auth');
+const profileRoutes = require('./routes/profile');
+const passwordRoutes = require('./routes/password');
+const healthRoutes = require('./routes/health');
+const topicRoutes = require('./routes/topic');
+const fileRoutes = require('./routes/file');
+const platformRoleRoutes = require('./routes/platform-role');
+const topicCategoriesRoutes = require('./routes/topic-category');
+const logsRoutes = require('./routes/log');
+const agentRoleRoutes = require('./routes/agent-role');
 
 
 const app = express();
