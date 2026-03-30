@@ -15,8 +15,9 @@ const ACTIONS_CONFIG = {
         label: "Пользователи ИИ",
         entity: 'AgentUser',
         actions: {
+            READ: { key: 'AGENT_USER_READ', label: 'Получение пользователей ИИ' },
             CREATE: { key: 'AGENT_USER_CREATE', label: 'Добавление пользователя ИИ' },
-            UPDATE: { key: 'AGENT_USER_UPDATE', label: 'Изменение прав пользователя ИИ' },
+            UPDATE: { key: 'AGENT_USER_UPDATE', label: 'Обновление пользователя ИИ' },
             DELETE: { key: 'AGENT_USER_DELETE', label: 'Удаление пользователя ИИ' },
             SERVER_ERROR: { key: 'AGENT_USER_ERROR', label: 'Ошибка в модуле пользователей ИИ' },
         }
