@@ -113,15 +113,7 @@ const deleteCategoryListSchema = z.object({
 
 const getAllCategoriesSchema = z.object({
     query: z.object({
-        search: z.string().trim().optional(),
-        page: z.string()
-            .regex(/^\d+$/, "Должно быть числом")
-            .transform(Number)
-            .default("1"),
-        limit: z.string()
-            .regex(/^\d+$/, "Должно быть числом")
-            .transform(Number)
-            .default("20")
+        search: z.string().trim().optional()
     })
 });
 

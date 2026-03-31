@@ -3,7 +3,7 @@ const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 
 module.exports = async (req, res) => {
-    const { page, limit, search } = req.validatedData.query;
+    const { search } = req.validatedData.query;
 
     try {
         const filter = {};
@@ -16,37 +16,22 @@ module.exports = async (req, res) => {
             ];
         }
 
-        const skip = (page - 1) * limit;
-
-        const [roles, total] = await Promise.all([
-            AgentRole.find(filter)
-                .sort({ createdAt: -1 }) 
-                .skip(skip)
-                .limit(limit)
-                .lean(),
-            AgentRole.countDocuments(filter)
-        ]);
-
-        const pagination = {
-            total,
-            page,
-            limit,
-            pages: Math.ceil(total / limit)
-        };
+        const roles = await AgentRole.find(filter)
+            .sort({ createdAt: -1 })
+            .lean();
 
         return successHandler(
             res,
             200,
-            'Список ролей агентов успешно получен',
-            roles,
-            pagination
+            'Список ролей пользователей агента успешно получен',
+            roles
         );
 
     } catch (error) {
         return errorHandler(
             res,
             500,
-            'Ошибка сервера при получении списка ролей агентов',
+            'Ошибка сервера при получении списка ролей пользователей агента',
             [{ path: 'server', message: error.message }]
         );
     }

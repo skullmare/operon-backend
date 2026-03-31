@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
 
         await logHandler({
             action: ACTIONS_CONFIG.AGENT_USERS.actions.DELETE.key,
-            message: `Удален агент: ${deletedAgentUser.chatId}`,
+            message: `Удален пользователь: ${deletedAgentUser.chatId}`,
             userId: currentPlatformUserId,
             entityId: deletedAgentUser._id,
             status: 'success'

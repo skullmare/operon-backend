@@ -22,7 +22,8 @@ module.exports = async (req, res) => {
             ];
         }
 
-        const skip = (page - 1) * limit;
+        const current = page;
+        const skip = (current - 1) * limit;
 
         const [users, total] = await Promise.all([
             PlatformUser.find(filter)
@@ -36,7 +37,7 @@ module.exports = async (req, res) => {
 
         const pagination = {
             total,
-            page,
+            current,
             limit,
             pages: Math.ceil(total / limit)
         };

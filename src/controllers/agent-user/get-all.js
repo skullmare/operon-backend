@@ -30,15 +30,16 @@ module.exports = async (req, res) => {
 
         if (hasPhone !== undefined) {
             if (hasPhone) {
-                filter.phone = { $exists: true, $ne: null, $ne: '' };
+                filter.phone = { $exists: true, $ne: null, $nin: [''] };
             } else {
                 filter.phone = { $exists: false, $eq: null };
             }
         }
 
-        const skip = (page - 1) * limit;
+        const current = page;
+        const skip = (current - 1) * limit;
 
-        const [agentUsers, totalCount] = await Promise.all([
+        const [agentUsers, total] = await Promise.all([
             AgentUser.find(filter)
                 .populate('role', 'name')
                 .skip(skip)
@@ -49,27 +50,29 @@ module.exports = async (req, res) => {
 
         await logHandler({
             action: ACTIONS_CONFIG.AGENT_USERS.actions.READ.key,
-            message: `Получен список агентов`,
+            message: `Получен список пользователей агента`,
             userId: currentPlatformUserId,
             status: 'success'
         });
 
-        const responseData = {
-            items: agentUsers,
-            pagination: {
-                page,
-                limit,
-                totalCount,
-                totalPages: Math.ceil(totalCount / limit)
-            }
+        const pagination = {
+            total,
+            current,
+            limit,
+            pages: Math.ceil(total / limit)
         };
 
-        return successHandler(res, 200, 'Список агентов успешно получен', responseData);
+        const responseData = {
+            items: agentUsers,
+            pagination
+        };
+
+        return successHandler(res, 200, 'Список пользователей агента успешно получен', responseData);
 
     } catch (error) {
         await logHandler({
             action: ACTIONS_CONFIG.AGENT_USERS.actions.SERVER_ERROR.key,
-            message: `Ошибка при получении списка агентов: ${error.message}`,
+            message: `Ошибка при получении списка пользователей агента: ${error.message}`,
             userId: currentPlatformUserId,
             status: 'error'
         });
@@ -77,7 +80,7 @@ module.exports = async (req, res) => {
         return errorHandler(
             res,
             500,
-            'Ошибка сервера при получении списка агентов',
+            'Ошибка сервера при получении списка пользователей агента',
             [{ path: 'server', message: error.message }]
         );
     }

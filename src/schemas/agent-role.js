@@ -152,9 +152,7 @@ const getOneAgentRoleSchema = z.object({
 
 const getAllAgentRolesSchema = z.object({
     query: z.object({
-        search: z.string().trim().optional(),
-        page: z.string().regex(/^\d+$/, "Номер страницы должен быть числом").transform(Number).default("1"),
-        limit: z.string().regex(/^\d+$/, "Лимит должен быть числом").transform(Number).default("10")
+        search: z.string().trim().optional()
     })
 });
 

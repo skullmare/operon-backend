@@ -153,20 +153,9 @@ const deletePlatformRoleListSchema = z.object({
 const getAllPlatformRolesSchema = z.object({
     query: z.object({
         search: z.string().trim().optional(),
-
         isSystem: z.enum(['true', 'false'])
             .transform(val => val === 'true')
-            .optional(),
-
-        page: z.string()
-            .regex(/^\d+$/, "Номер страницы должен быть числом")
-            .transform(Number)
-            .default("1"),
-
-        limit: z.string()
-            .regex(/^\d+$/, "Лимит должен быть числом")
-            .transform(Number)
-            .default("10"),
+            .optional()
     })
 });
 
