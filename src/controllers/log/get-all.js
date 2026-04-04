@@ -35,7 +35,8 @@ module.exports = async (req, res) => {
             if (endDate) filter.createdAt.$lte = new Date(endDate);
         }
 
-        const skip = (page - 1) * limit;
+        const current = page;
+        const skip = (current - 1) * limit;
 
         const [logs, total] = await Promise.all([
             Log.find(filter)
@@ -49,7 +50,7 @@ module.exports = async (req, res) => {
 
         const pagination = {
             total,
-            page,
+            current,
             limit,
             pages: Math.ceil(total / limit)
         };

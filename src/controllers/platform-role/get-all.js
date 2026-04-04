@@ -3,7 +3,7 @@ const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 
 module.exports = async (req, res) => {
-    const { search, isSystem, page, limit } = req.validatedData.query;
+    const { search, isSystem } = req.validatedData.query;
 
     try {
         const filter = {};
@@ -14,21 +14,10 @@ module.exports = async (req, res) => {
             filter.isSystem = isSystem;
         }
 
-        const skip = (page - 1) * limit;
-
-        const [roles, total] = await Promise.all([
-            PlatformRole.find(filter).sort({ name: 1 }).skip(skip).limit(limit),
-            PlatformRole.countDocuments(filter)
-        ]);
+        const roles = await PlatformRole.find(filter).sort({ name: 1 });
 
         return successHandler(res, 200, 'Список ролей получен', {
-            roles,
-            pagination: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit)
-            }
+            roles
         });
 
     } catch (error) {

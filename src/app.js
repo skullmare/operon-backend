@@ -18,6 +18,7 @@ const platformRoleRoutes = require('./routes/platform-role');
 const topicCategoriesRoutes = require('./routes/topic-category');
 const logsRoutes = require('./routes/log');
 const agentRoleRoutes = require('./routes/agent-role');
+const agentUserRoutes = require('./routes/agent-user');
 
 
 const app = express();
@@ -57,6 +58,7 @@ app.use('/api/v1/platform/roles', platformRoleRoutes);
 app.use('/api/v1/topic/categories', topicCategoriesRoutes);
 app.use('/api/v1/logs', logsRoutes);
 app.use('/api/v1/agent/roles', agentRoleRoutes);
+app.use('/api/v1/agent/users', agentUserRoutes);
 
 app.use((req, res) => {
     sendError(res, 404, `Маршрут ${req.method} ${req.url} не найден`);
