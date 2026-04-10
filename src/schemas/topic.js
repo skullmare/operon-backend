@@ -39,10 +39,6 @@ const createTopicSchema = z.object({
             .trim()
             .min(1, "Наименование топика не может быть пустым")
             .max(150, "Наименование топика не может быть более 150 символов"),
-        content: z
-            .array(z.any()) 
-            .optional()
-            .default([]),
         metadata: metadataSchema
     })
 });

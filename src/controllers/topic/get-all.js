@@ -20,9 +20,7 @@ module.exports = async (req, res) => {
         const [result, total] = await Promise.all([
             Topic.find(filter)
                 .select({
-                    content: 0,
-                    plainTextContent: 0,
-                    collaborationData: 0,
+                    markdownContent: 0,
                     ...(search ? { score: { $meta: "textScore" } } : {})
                 })
                 .populate('metadata.category', 'name')
