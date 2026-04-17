@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const PlatformUser = require('../../models/platform-user');
 const { hashPassword } = require('../../utils/password-handler');
-const sendEmail = require('../../services/email/send-email');
+const { sendEmail } = require('../../services/email/send-email');
 const welcomeUserTemplate = require('../../utils/templates/welcome-user');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
