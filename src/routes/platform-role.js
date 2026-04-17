@@ -12,7 +12,7 @@ const { getAllPlatformRolesSchema, getOnePlatformRoleSchema, deletePlatformRoleL
 router.get(
     '/',
     auth,
-    checkPermission('role.read'),
+    checkPermission('platformRoles.read'),
     validate(getAllPlatformRolesSchema),
     roleController.getAllRoles
 );
@@ -20,7 +20,7 @@ router.get(
 router.get(
     '/:id',
     auth,
-    checkPermission('role.read'),
+    checkPermission('platformRoles.read'),
     validate(getOnePlatformRoleSchema),
     roleController.getOneRole
 );
@@ -28,7 +28,7 @@ router.get(
 router.post(
     '/',
     auth,
-    checkPermission('role.create'),
+    checkPermission('platformRoles.create'),
     validate(createPlatformRoleSchema),
     roleController.createRole
 );
@@ -36,7 +36,7 @@ router.post(
 router.patch(
     '/:id',
     auth,
-    checkPermission('role.update'),
+    checkPermission('platformRoles.update'),
     validate(updatePlatformRoleSchema),
     roleController.updateRole
 );
@@ -44,7 +44,7 @@ router.patch(
 router.delete(
     '/delete/many',
     auth,
-    checkPermission('role.delete'),
+    checkPermission('platformRoles.delete'),
     validate(deletePlatformRoleListSchema),
     roleController.deleteRoleList
 );
@@ -52,7 +52,7 @@ router.delete(
 router.delete(
     '/:id',
     auth,
-    checkPermission('role.delete'),
+    checkPermission('platformRoles.delete'),
     validate(deletePlatformRoleSchema),
     roleController.deleteRole
 );

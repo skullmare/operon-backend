@@ -11,6 +11,7 @@ const userRoutes = require('./routes/platform-user');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const passwordRoutes = require('./routes/password');
+const permissionsRoutes = require('./routes/permissions');
 const healthRoutes = require('./routes/health');
 const topicRoutes = require('./routes/topic');
 const fileRoutes = require('./routes/file');
@@ -53,6 +54,7 @@ app.use('/api/v1/topic/categories', topicCategoriesRoutes);
 app.use('/api/v1/logs', logsRoutes);
 app.use('/api/v1/agent/roles', agentRoleRoutes);
 app.use('/api/v1/agent/users', agentUserRoutes);
+app.use('/api/v1/permissions', permissionsRoutes);
 
 app.use((req, res) => {
     sendError(res, 404, `Маршрут ${req.method} ${req.url} не найден`);

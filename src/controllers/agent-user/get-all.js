@@ -62,12 +62,7 @@ module.exports = async (req, res) => {
             pages: Math.ceil(total / limit)
         };
 
-        const responseData = {
-            items: agentUsers,
-            pagination
-        };
-
-        return successHandler(res, 200, 'Список пользователей агента успешно получен', responseData);
+        return successHandler(res, 200, 'Список пользователей агента успешно получен', agentUsers, pagination);
 
     } catch (error) {
         await logHandler({

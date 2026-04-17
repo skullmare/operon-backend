@@ -37,13 +37,13 @@ const PERMISSIONS_CONFIG = {
             DELETE: { key: 'topicCategories.delete', label: 'Удаление категорий' },
         }
     },
-    ROLES: {
+    PLATFORM_ROLES: {
         label: "Роли",
         actions: {
-            READ: { key: 'role.read', label: 'Просмотр списка ролей' },
-            CREATE: { key: 'role.create', label: 'Создание новых ролей' },
-            UPDATE: { key: 'role.update', label: 'Редактирование ролей' },
-            DELETE: { key: 'role.delete', label: 'Удаление ролей' },
+            READ: { key: 'platformRoles.read', label: 'Просмотр списка ролей' },
+            CREATE: { key: 'platformRoles.create', label: 'Создание новых ролей' },
+            UPDATE: { key: 'platformRoles.update', label: 'Редактирование ролей' },
+            DELETE: { key: 'platformRoles.delete', label: 'Удаление ролей' },
         }
     },
     AGENT_ROLES: {

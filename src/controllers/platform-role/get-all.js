@@ -16,9 +16,7 @@ module.exports = async (req, res) => {
 
         const roles = await PlatformRole.find(filter).sort({ name: 1 });
 
-        return successHandler(res, 200, 'Список ролей получен', {
-            roles
-        });
+        return successHandler(res, 200, 'Список ролей получен', roles);
 
     } catch (error) {
         return errorHandler(res, 500, 'Ошибка сервера при получении ролей', [{ path: 'server', message: error.message }]);
