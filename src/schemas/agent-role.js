@@ -27,7 +27,7 @@ const createAgentRoleSchema = z.object({
         name: z.string("Название роли обязательно")
             .trim()
             .min(1, "Название роли не может быть пустым")
-            .max(100, "Название роли не может быть более 100 символов")
+            .max(50, "Название роли не может быть более 50 символов")
             .superRefine(agentRoleNameIsUnique()),
         description: z.string("Описание роли обязательно")
             .trim()
