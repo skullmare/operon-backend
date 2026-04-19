@@ -8,8 +8,8 @@ const objectId = z.string()
 const updateMeSchema = z.object({
     userId: objectId,
     body: z.object({
-        firstName: z.string().trim().min(1, "Поле имени не может быть пустым").optional(),
-        lastName: z.string().trim().min(1, "Поле фамилия не может быть пустой").optional(),
+        firstName: z.string().trim().min(1, "Поле имени не может быть пустым").max(50, "Максимальная длинна имени 50 символов").optional(),
+        lastName: z.string().trim().min(1, "Поле фамилия не может быть пустой").max(50, "Максимальная длинна фамилии 50 символов").optional(),
         login: z.string().trim().min(3, "Логин должен быть не менее 3 символов")
             .transform(val => val.toLowerCase()).optional(),
         email: z.email("Некорректный формат email")

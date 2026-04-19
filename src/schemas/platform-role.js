@@ -28,7 +28,7 @@ const createPlatformRoleSchema = z.object({
             .string("Название роли обязательно для заполнения")
             .trim()
             .min(1, "Название роли не может быть пустым")
-            .max(100, "Название роли не может быть более 100 символов")
+            .max(50, "Название роли не может быть более 50 символов")
             .superRefine(roleNameIsUnique()),
         permissions: z.array(z.enum(ALL_PERMISSIONS, "Выбрано некорректное разрешение")).min(1, "Список прав не может быть пустым"),
         description: z
