@@ -77,6 +77,14 @@ const updateUserSchema = z.object({
         });
     }
 
+    if (user.isSystem && data.body.status) {
+        ctx.addIssue({
+            code: 'custom',
+            path: ['body', 'status'],
+            message: 'У системного пользователя нельзя изменять статус'
+        });
+    }
+
     if (data.body.login) {
         await loginIsUnique(data.params.id)(data.body.login, ctx);
     }
