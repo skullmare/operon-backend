@@ -54,7 +54,6 @@ const updateUserSchema = z.object({
         lastName: z.string().trim().min(1, "Поле фамилия не может быть пустым").max(100, "Максимальная длинна фамилии 100 символов").optional(),
         login: z.string().trim().min(3, "Логин должен быть не менее 3 символов").max(30, "Логин должен быть не более 30 символов").transform(val => val.toLowerCase()).optional(),
         email: z.email("Некорректный формат email").optional(),
-        password: z.string().min(10, "Пароль должен быть не менее 10 символов").max(100, "Пароль должен быть не более 100 символов").optional(),
         role: objectId.pipe(z.string().superRefine(dbExists('PlatformRole'))).optional(),
         photoUrl: z.string().url("Некорректная ссылка на фото").optional().or(z.literal('')),
         status: z.enum(['active', 'blocked'], "Недопустимый статус. Доступны: active, blocked").optional()
