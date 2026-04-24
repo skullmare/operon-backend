@@ -26,7 +26,6 @@ router.put(
 
 router.post(
     '/forgot',
-    rateLimit({ windowMs: 15 * 60 * 1000, max: 5, messageTemplate: 'Слишком много запросов на сброс пароля, попробуйте позже' }),
     validate(forgotPasswordSchema),
     forgotPassword
 );
