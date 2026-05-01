@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const AgentUser = require('../../models/agent-user');
+const { processMessage } = require('../agent');
 const logger = require('../../utils/logger');
 
 let bot = null;
@@ -56,9 +57,11 @@ async function handleMessage(msg) {
         );
     }
 
-    // Placeholder: agent response (will be replaced with real agent integration)
     await AgentUser.findByIdAndUpdate(user._id, { lastActivity: new Date(), $inc: { requestsCount: 1 } });
-    return bot.sendMessage(chatId, `[Агент]: обработка запроса... (интеграция с агентом будет добавлена)`);
+
+    await bot.sendChatAction(chatId, 'typing');
+    const reply = await processMessage(user, text);
+    return bot.sendMessage(chatId, reply);
 }
 
 async function handleContact(msg) {
