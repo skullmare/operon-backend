@@ -3,6 +3,7 @@ const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
 const logHandler = require('../../utils/log-handler');
 const { ACTIONS_CONFIG } = require('../../constants/actions');
+const { getBot } = require('../../services/telegram/bot');
 
 module.exports = async (req, res) => {
     const currentPlatformUserId = req.user?.id;
@@ -10,6 +11,9 @@ module.exports = async (req, res) => {
     const data = req.validatedData.body;
 
     try {
+        const previousUser = await AgentUser.findById(id);
+        const roleWasNull = previousUser && !previousUser.role;
+
         if (data.role) {
             data.status = 'active';
         }
@@ -42,6 +46,16 @@ module.exports = async (req, res) => {
             entityId: updatedAgentUser._id,
             status: 'success'
         });
+
+        if (roleWasNull && updatedAgentUser.role && updatedAgentUser.chatId) {
+            const bot = getBot();
+            if (bot) {
+                bot.sendMessage(
+                    updatedAgentUser.chatId,
+                    `Вам предоставлен доступ к ИИ-агенту (роль: ${updatedAgentUser.role.name}). Напишите сообщение, чтобы начать.`
+                ).catch(() => {});
+            }
+        }
 
         return successHandler(res, 200, 'Данные пользователя успешно обновлены', updatedAgentUser);
 
