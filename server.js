@@ -7,7 +7,8 @@ const { seedSuperAdmin } = require('./src/init/super-admin');
 const { seedSystemSettings } = require('./src/init/system-settings');
 const { seedTopicCategories } = require('./src/init/topic-category');
 const { initQdrant } = require('./src/init/qdrant');
-const { initHocuspocus } = require('./src/services/init-collaboration'); // ← добавили
+const { initHocuspocus } = require('./src/services/init-collaboration');
+const { initBot } = require('./src/services/telegram/bot');
 const logger = require('./src/utils/logger');
 
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ const startServer = async () => {
     await seedSuperAdmin();
     await initQdrant();
     await initHocuspocus();
+    initBot();
 
     server = app.listen(PORT, () => {
       logger.success(`Сервер запущен на порту ${PORT} | http://localhost:${PORT}`);
