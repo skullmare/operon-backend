@@ -1,16 +1,12 @@
-const { OpenRouter } = require("@openrouter/sdk");
-const { OPENROUTER_API_KEY } = process.env;
-const openrouter = new OpenRouter({ apiKey: OPENROUTER_API_KEY });
+const openrouter = require('../../../config/openrouter');
 
-async function getEmbeddings(chunks, model) {
-    const response = await openrouter.embeddings.generate({
-        requestBody: {
-            model: model,
-            input: chunks,
-            encodingFormat: "float"
-        }
+const MODEL = process.env.OPENROUTER_EMBEDDING_MODEL || 'openai/text-embedding-3-small';
+
+async function getEmbeddings(chunks) {
+    const res = await openrouter.embeddings.generate({
+        requestBody: { model: MODEL, input: chunks, encodingFormat: 'float' }
     });
-    return response.data;
+    return res.data;
 }
 
 module.exports = { getEmbeddings };
