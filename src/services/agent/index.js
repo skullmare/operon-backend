@@ -1,4 +1,5 @@
 const TopicCategory = require('../../models/topic-category');
+const Topic = require('../../models/topic');
 const Message = require('../../models/message');
 const { getEmbeddings } = require('../openrouter/get-embeddings');
 const { classifyCategory } = require('./classify');
@@ -11,10 +12,12 @@ async function processMessage(agentUser, userMessage) {
     const { chatId, _id: agentUserId } = agentUser;
     const roleId = (agentUser.role._id ?? agentUser.role).toString();
 
-    const [[embedding], categories] = await Promise.all([
+    const [[embedding], usedCategoryIds] = await Promise.all([
         getEmbeddings([userMessage]),
-        TopicCategory.find({}).lean()
+        Topic.distinct('metadata.category')
     ]);
+
+    const categories = await TopicCategory.find({ _id: { $in: usedCategoryIds } }).lean();
 
     const categoryName = await classifyCategory(userMessage, categories);
     const chunks = await searchChunks(embedding.embedding, categoryName, roleId);
