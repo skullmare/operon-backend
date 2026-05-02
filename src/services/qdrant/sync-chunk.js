@@ -15,7 +15,7 @@ async function syncTopicToQdrant(topic) {
     let content = topic.markdownContent;
 
     const chunks = await getDoclingChunks(content);
-    const embeddings = await getEmbeddings(chunks, 'openai/text-embedding-3-small');
+    const embeddings = await getEmbeddings(chunks);
 
     const points = embeddings.map((item, i) => ({
         id: crypto.randomUUID(),

@@ -1,13 +1,10 @@
-const { OpenRouter } = require('@openrouter/sdk');
+const openrouter = require('../../../config/openrouter');
 
-const openrouter = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
-const CHAT_MODEL = process.env.OPENROUTER_CHAT_MODEL || 'openai/gpt-4o-mini';
+const MODEL = process.env.OPENROUTER_CHAT_MODEL || 'openai/gpt-4o-mini';
 
-async function chat(messages, model = CHAT_MODEL) {
-    const response = await openrouter.chat.send({
-        chatGenerationParams: { model, messages }
-    });
-    return response.choices[0].message.content;
+async function chat(messages) {
+    const res = await openrouter.chat.send({ chatGenerationParams: { model: MODEL, messages } });
+    return res.choices[0].message.content;
 }
 
 module.exports = { chat };
