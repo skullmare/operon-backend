@@ -30,9 +30,15 @@ async function processMessage(agentUser, userMessage) {
 
     await Message.create({ agentUserId, chatId, role: 'user', content: userMessage, category: categoryName });
 
-    const responseText = await generateResponse(userMessage, chunks, history);
+    const responseAgent = await generateResponse(userMessage, chunks, history);
 
-    await Message.create({ agentUserId, chatId, role: 'assistant', content: responseText, category: categoryName });
+    await Message.create({ agentUserId, chatId, role: 'assistant', content: responseAgent, category: categoryName });
+
+    const responseText = `Текст запроса: ${userMessage}
+Категория запроса: ${categoryName}
+Ваша роль: ${agentUser.role.name}
+Количество найденных чанков: ${chunks.length}
+Ответ на запрос: ${responseAgent}`;
 
     return responseText;
 }
