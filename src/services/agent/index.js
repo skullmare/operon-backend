@@ -34,7 +34,12 @@ async function processMessage(agentUser, userMessage) {
 
     await Message.create({ agentUserId, chatId, role: 'assistant', content: responseAgent, category: categoryName });
 
-    const responseText = `Категория запроса: ${categoryName ? categoryName : 'не определена'}.
+    const responseText = `Категория запроса: ${categoryName}.
+Ваша роль: ${agentUser.role.name}
+=============
+Количество чанков: ${chunks.length}
+Чанки: ${chunks}
+=============
 Ответ на запрос: ${responseAgent}`;
 
     return responseText;
