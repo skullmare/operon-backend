@@ -19,9 +19,9 @@ const startServer = async () => {
     await connectDB();
     
     await seedPlatformRoles();
-    await seedAgentRoles();
+    // await seedAgentRoles();
     // await seedSystemSettings();
-    await seedTopicCategories();
+    // await seedTopicCategories();
     await seedSuperAdmin();
     await initQdrant();
     await initHocuspocus();
