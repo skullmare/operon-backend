@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
             if (bot) {
                 bot.sendMessage(
                     updatedAgentUser.chatId,
-                    `Вам предоставлен доступ к ИИ-агенту (роль: ${updatedAgentUser.role.name}). Напишите сообщение, чтобы начать.`
+                    `Вам предоставлен доступ к ИИ-агенту. Напишите сообщение, чтобы начать.`
                 ).catch(() => {});
             }
         }
