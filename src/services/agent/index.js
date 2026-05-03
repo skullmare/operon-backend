@@ -38,7 +38,8 @@ async function processMessage(agentUser, userMessage) {
 Ваша роль: ${agentUser.role.name}
 =============
 Количество чанков: ${chunks.length}
-Чанки: ${chunks}
+Чанки: 
+${chunks.map((h, i) => `[${i + 1}] ${h.payload.text}`).join('\n\n')}
 =============
 Ответ на запрос: ${responseAgent}`;
 
