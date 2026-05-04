@@ -12,7 +12,7 @@ async function syncTopicToQdrant(topic) {
     
     await deleteTopicFromQdrant(topicId);
 
-    let content = topic.markdownContent;
+    let content = `# ${topic.name}\n\n${topic.markdownContent}`;
 
     const chunks = await getDoclingChunks(content);
     const embeddings = await getEmbeddings(chunks);
