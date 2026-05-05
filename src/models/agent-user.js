@@ -17,8 +17,12 @@ const agentUserSchema = new mongoose.Schema({
     chatId: {
         type: String,
         required: true,
-        unique: true,
         index: true
+    },
+    messenger: {
+        type: String,
+        enum: ['telegram', 'max'],
+        default: 'telegram'
     },
     requestsCount: {
         type: Number,
@@ -41,6 +45,8 @@ const agentUserSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+agentUserSchema.index({ chatId: 1, messenger: 1 }, { unique: true });
 
 agentUserSchema.virtual('fullName').get(function() {
     return `${this.firstName || ''} ${this.lastName || ''}`.trim();
