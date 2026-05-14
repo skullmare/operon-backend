@@ -124,6 +124,22 @@ const ACTION_TO_ENTITY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) =
     return map;
 }, {});
 
+// action key → human-readable label (e.g. 'TOPIC_CREATE' → 'Создание темы')
+const ACTION_LABEL_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) => {
+    Object.values(group.actions).forEach(act => {
+        map[act.key] = act.label;
+    });
+    return map;
+}, {});
+
+// action key → group label (e.g. 'TOPIC_CREATE' → 'База знаний (Темы)')
+const ACTION_GROUP_LABEL_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) => {
+    Object.values(group.actions).forEach(act => {
+        map[act.key] = group.label;
+    });
+    return map;
+}, {});
+
 const getActionsForUI = () => {
     return Object.keys(ACTIONS_CONFIG).map(key => ({
         entity: key,
@@ -132,9 +148,11 @@ const getActionsForUI = () => {
     }));
 };
 
-module.exports = { 
-    ACTIONS_CONFIG, 
-    ALL_ACTIONS, 
-    ACTION_TO_ENTITY_MAP, 
-    getActionsForUI 
+module.exports = {
+    ACTIONS_CONFIG,
+    ALL_ACTIONS,
+    ACTION_TO_ENTITY_MAP,
+    ACTION_LABEL_MAP,
+    ACTION_GROUP_LABEL_MAP,
+    getActionsForUI
 };
