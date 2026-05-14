@@ -142,7 +142,7 @@ const ACTION_GROUP_LABEL_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group)
 
 const getActionsForUI = () => {
     return Object.keys(ACTIONS_CONFIG).map(key => ({
-        entity: key,
+        entity: ACTIONS_CONFIG[key].entity,
         group: ACTIONS_CONFIG[key].label,
         actions: Object.values(ACTIONS_CONFIG[key].actions)
     }));
