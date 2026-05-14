@@ -126,6 +126,7 @@ const ACTION_TO_ENTITY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) =
 
 const getActionsForUI = () => {
     return Object.keys(ACTIONS_CONFIG).map(key => ({
+        entity: key,
         group: ACTIONS_CONFIG[key].label,
         actions: Object.values(ACTIONS_CONFIG[key].actions)
     }));
