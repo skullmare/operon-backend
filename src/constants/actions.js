@@ -4,6 +4,7 @@ const ACTIONS_CONFIG = {
     PLATFORM_USERS: {
         label: "Сотрудники",
         entity: 'PlatformUser',
+        category: 'PLATFORM_USERS',
         actions: {
             CREATE: { key: 'PLATFORM_USER_CREATE', label: 'Добавление сотрудника' },
             UPDATE: { key: 'PLATFORM_USER_UPDATE', label: 'Редактирование данных сотрудника' },
@@ -14,6 +15,7 @@ const ACTIONS_CONFIG = {
     AGENT_USERS: {
         label: "Пользователи ИИ",
         entity: 'AgentUser',
+        category: 'AGENT_USERS',
         actions: {
             READ: { key: 'AGENT_USER_READ', label: 'Получение пользователей ИИ' },
             CREATE: { key: 'AGENT_USER_CREATE', label: 'Добавление пользователя ИИ' },
@@ -25,6 +27,7 @@ const ACTIONS_CONFIG = {
     TOPICS: {
         label: "База знаний (Темы)",
         entity: 'Topic',
+        category: 'TOPICS',
         actions: {
             CREATE: { key: 'TOPIC_CREATE', label: 'Создание темы' },
             UPDATE: { key: 'TOPIC_UPDATE', label: 'Редактирование темы' },
@@ -37,6 +40,7 @@ const ACTIONS_CONFIG = {
     TOPIC_CATEGORIES: {
         label: "Категории",
         entity: 'TopicCategory',
+        category: 'TOPIC_CATEGORIES',
         actions: {
             CREATE: { key: 'CATEGORY_CREATE', label: 'Создание категории' },
             UPDATE: { key: 'CATEGORY_UPDATE', label: 'Редактирование категории' },
@@ -47,6 +51,7 @@ const ACTIONS_CONFIG = {
     PLATFORM_ROLES: {
         label: "Роли платформы",
         entity: 'PlatformRole',
+        category: 'PLATFORM_ROLES',
         actions: {
             CREATE: { key: 'PLATFORM_ROLE_CREATE', label: 'Создание роли' },
             UPDATE: { key: 'PLATFORM_ROLE_UPDATE', label: 'Редактирование роли' },
@@ -57,6 +62,7 @@ const ACTIONS_CONFIG = {
     AGENT_ROLES: {
         label: "Роли пользователей ИИ агента",
         entity: 'AgentRole',
+        category: 'AGENT_ROLES',
         actions: {
             CREATE: { key: 'AGENT_ROLE_CREATE', label: 'Создание роли пользователя ИИ агента' },
             UPDATE: { key: 'AGENT_ROLE_UPDATE', label: 'Редактирование роли пользователя ИИ агента' },
@@ -66,6 +72,7 @@ const ACTIONS_CONFIG = {
     SYSTEM_SETTINGS: {
         label: "Настройки системы",
         entity: 'SystemSetting',
+        category: 'SYSTEM_SETTINGS',
         actions: {
             CREATE: { key: 'SYSTEM_SETTING_CREATE', label: 'Добавление настройки' },
             UPDATE: { key: 'SYSTEM_SETTING_UPDATE', label: 'Изменение настройки' },
@@ -75,6 +82,7 @@ const ACTIONS_CONFIG = {
     AUTH: {
         label: "Авторизация",
         entity: 'PlatformUser',
+        category: 'AUTH',
         actions: {
             LOGIN_SUCCESS: { key: 'AUTH_LOGIN_SUCCESS', label: 'Успешный вход' },
             LOGIN_FAILED: { key: 'AUTH_LOGIN_FAILED', label: 'Неудачный вход' },
@@ -89,6 +97,7 @@ const ACTIONS_CONFIG = {
     INFRASTRUCTURE: {
         label: "Инфраструктура",
         entity: 'System',
+        category: 'INFRASTRUCTURE',
         actions: {
             FILE_UPLOAD: { key: 'FILE_UPLOAD', label: 'Загрузка файла' },
             SERVER_ERROR: { key: 'SYSTEM_SERVER_ERROR', label: 'Критическая системная ошибка' },
@@ -97,6 +106,7 @@ const ACTIONS_CONFIG = {
     PROFILE: {
         label: "Личный профиль",
         entity: 'PlatformUser',
+        category: 'PROFILE',
         actions: {
             UPDATE: { key: 'PROFILE_UPDATE', label: 'Обновление личных данных' },
             SERVER_ERROR: { key: 'PROFILE_ERROR', label: 'Ошибка в модуле профиля' },
@@ -105,6 +115,7 @@ const ACTIONS_CONFIG = {
     PASSWORD: {
         label: "Пароль",
         entity: 'PlatformUser',
+        category: 'PASSWORD',
         actions: {
             PASSWORD_RESET_REQUEST: { key: 'AUTH_PASSWORD_RESET_REQUEST', label: 'Запрос на восстановление пароля' },
             PASSWORD_RESET_SUCCESS: { key: 'AUTH_PASSWORD_RESET_SUCCESS', label: 'Пароль успешно восстановлен' },
@@ -117,9 +128,20 @@ const ACTIONS_CONFIG = {
 const ALL_ACTIONS = Object.values(ACTIONS_CONFIG)
     .flatMap(group => Object.values(group.actions).map(action => action.key));
 
+
+const ALL_CATEGORY = Object.values(ACTIONS_CONFIG)
+    .map(group => group.category);
+
 const ACTION_TO_ENTITY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) => {
     Object.values(group.actions).forEach(act => {
         map[act.key] = group.entity;
+    });
+    return map;
+}, {});
+
+const ACTION_TO_CATEGORY_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group) => {
+    Object.values(group.actions).forEach(act => {
+        map[act.key] = group.category;
     });
     return map;
 }, {});
@@ -142,7 +164,7 @@ const ACTION_GROUP_LABEL_MAP = Object.values(ACTIONS_CONFIG).reduce((map, group)
 
 const getActionsForUI = () => {
     return Object.keys(ACTIONS_CONFIG).map(key => ({
-        entity: ACTIONS_CONFIG[key].entity,
+        category: ACTIONS_CONFIG[key].category,
         group: ACTIONS_CONFIG[key].label,
         actions: Object.values(ACTIONS_CONFIG[key].actions)
     }));
@@ -151,7 +173,9 @@ const getActionsForUI = () => {
 module.exports = {
     ACTIONS_CONFIG,
     ALL_ACTIONS,
+    ALL_CATEGORY,
     ACTION_TO_ENTITY_MAP,
+    ACTION_TO_CATEGORY_MAP,
     ACTION_LABEL_MAP,
     ACTION_GROUP_LABEL_MAP,
     getActionsForUI

@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
         limit, 
         search, 
         action, 
-        entityType, 
+        category, 
         entityId, 
         user, 
         status, 
@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
         const filter = {};
 
         if (action) filter.action = action;
-        if (entityType) filter.entityType = entityType;
+        if (category) filter.category = category;
         if (entityId) filter.entityId = entityId;
         if (user) filter.user = user;
         if (status) filter.status = status;

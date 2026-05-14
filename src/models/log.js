@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ALL_ACTIONS, ACTIONS_CONFIG } = require('../constants/actions');
+const { ALL_ACTIONS, ALL_CATEGORY, ACTIONS_CONFIG } = require('../constants/actions');
 
 const ALL_ENTITIES = [...new Set(Object.values(ACTIONS_CONFIG).map(group => group.entity))];
 
@@ -13,6 +13,12 @@ const logSchema = new mongoose.Schema({
     message: {
         type: String,
         required: true 
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ALL_CATEGORY,
+        index: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
