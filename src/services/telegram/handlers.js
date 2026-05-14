@@ -42,6 +42,7 @@ async function onContact(msg) {
 
     await AgentUser.create({
         chatId,
+        messenger: 'telegram',
         phone: contact.phone_number,
         firstName: contact.first_name || msg.from.first_name,
         lastName: contact.last_name || msg.from.last_name || ''
