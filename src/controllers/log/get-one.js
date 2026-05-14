@@ -1,6 +1,7 @@
 const Log = require('../../models/log');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
+const { ACTION_LABEL_MAP, ACTION_GROUP_LABEL_MAP } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
     const { id } = req.validatedData.params;
@@ -19,11 +20,17 @@ module.exports = async (req, res) => {
             );
         }
 
+        const localizedLog = {
+            ...log,
+            actionLabel: ACTION_LABEL_MAP[log.action] ?? log.action,
+            entityTypeLabel: ACTION_GROUP_LABEL_MAP[log.action] ?? log.entityType,
+        };
+
         return successHandler(
             res,
             200,
             'Детальная информация о логе получена',
-            log
+            localizedLog
         );
 
     } catch (error) {

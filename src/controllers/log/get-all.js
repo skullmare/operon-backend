@@ -1,6 +1,7 @@
 const Log = require('../../models/log');
 const successHandler = require('../../utils/success-handler');
 const errorHandler = require('../../utils/error-handler');
+const { ACTION_LABEL_MAP, ACTION_GROUP_LABEL_MAP } = require('../../constants/actions');
 
 module.exports = async (req, res) => {
     const { 
@@ -55,11 +56,17 @@ module.exports = async (req, res) => {
             pages: Math.ceil(total / limit)
         };
 
+        const localizedLogs = logs.map(log => ({
+            ...log,
+            actionLabel: ACTION_LABEL_MAP[log.action] ?? log.action,
+            entityTypeLabel: ACTION_GROUP_LABEL_MAP[log.action] ?? log.entityType,
+        }));
+
         return successHandler(
             res,
             200,
             'Логи успешно получены',
-            logs,
+            localizedLogs,
             pagination
         );
 
