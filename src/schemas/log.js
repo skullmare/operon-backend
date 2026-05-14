@@ -8,7 +8,7 @@ const getLogsSchema = z.object({
         page: z.string().regex(/^\d+$/, "Номер страницы должен быть числом").transform(Number).default("1"),
         limit: z.string().regex(/^\d+$/, "Лимит должен быть числом").transform(Number).default("20"),
         action: z.string().optional(),
-        entityType: z.string().optional(),
+        category: z.string().optional(),
         entityId: objectId.optional(),
         user: objectId.optional(),
         status: z.enum(['success', 'error']).optional(),
