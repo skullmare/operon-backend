@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 
         const [logs, total] = await Promise.all([
             Log.find(filter)
-                .populate('user', 'login firstName lastName')
+                .populate('user', 'photoUrl firstName lastName')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
